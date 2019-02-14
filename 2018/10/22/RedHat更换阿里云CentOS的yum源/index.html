@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.0.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.0.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.0.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.0.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.0.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.0.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="RedHat更换阿里云CentOS的yum源完整版">
+<meta name="keywords" content="RedHat">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RedHat更换阿里云CentOS的yum源">
+<meta property="og:url" content="http://yoursite.com/2018/10/22/RedHat更换阿里云CentOS的yum源/index.html">
+<meta property="og:site_name" content="LittleTry">
+<meta property="og:description" content="RedHat更换阿里云CentOS的yum源完整版">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-02-14T01:42:53.293Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="RedHat更换阿里云CentOS的yum源">
+<meta name="twitter:description" content="RedHat更换阿里云CentOS的yum源完整版">
+
+
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/10/22/RedHat更换阿里云CentOS的yum源/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>RedHat更换阿里云CentOS的yum源 | LittleTry</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">LittleTry</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">一点点拼凑，一点点积累</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/22/RedHat更换阿里云CentOS的yum源/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="LittleTry">
+      <meta itemprop="description" content="一个喜欢捣鼓的程序猿">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LittleTry">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">RedHat更换阿里云CentOS的yum源
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-10-22 11:31:26" itemprop="dateCreated datePublished" datetime="2018-10-22T11:31:26+08:00">2018-10-22</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-02-14 09:42:53" itemprop="dateModified" datetime="2019-02-14T09:42:53+08:00">2019-02-14</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+            <div class="post-description">RedHat更换阿里云CentOS的yum源完整版</div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="一-卸载自带软件包"><a href="#一-卸载自带软件包" class="headerlink" title="一 卸载自带软件包"></a>一 卸载自带软件包</h1><pre><code>rpm -qa | grep yum | xargs rpm -e --nodeps
+</code></pre><h1 id="二-保证上网正常"><a href="#二-保证上网正常" class="headerlink" title="二 保证上网正常"></a>二 保证上网正常</h1><pre><code>ping www.baidu.com
+</code></pre><h1 id="三-进入以下网站下载对应的包"><a href="#三-进入以下网站下载对应的包" class="headerlink" title="三 进入以下网站下载对应的包"></a>三 进入以下网站下载对应的包</h1><h2 id="1-阿里云网络源地址："><a href="#1-阿里云网络源地址：" class="headerlink" title="1 阿里云网络源地址："></a>1 阿里云网络源地址：</h2><pre><code>https://mirrors.aliyun.com/centos/7/os/x86_64/Packages/ 
+</code></pre><h2 id="2-网易163网络源地址："><a href="#2-网易163网络源地址：" class="headerlink" title="2 网易163网络源地址："></a>2 网易163网络源地址：</h2><pre><code>http://mirrors.163.com/ 
+</code></pre><h2 id="3-CentOS网络源地址："><a href="#3-CentOS网络源地址：" class="headerlink" title="3 CentOS网络源地址："></a>3 CentOS网络源地址：</h2><pre><code>http://centos.ustc.edu.cn/centos/ 
+</code></pre><p>使用CTRL+F输入关键字查找对应的安装包即可。</p>
+<h1 id="四-找到安装包后下载下来"><a href="#四-找到安装包后下载下来" class="headerlink" title="四 找到安装包后下载下来"></a>四 找到安装包后下载下来</h1><h2 id="若出现404错误去重新查询最新rpm包的链接"><a href="#若出现404错误去重新查询最新rpm包的链接" class="headerlink" title="若出现404错误去重新查询最新rpm包的链接"></a>若出现404错误去重新查询最新rpm包的链接</h2><pre><code>wget https://mirrors.aliyun.com/centos/7/os/x86_64/Packages/yum-metadata-parser-1.1.4-10.el7.x86_64.rpm
+wget https://mirrors.aliyun.com/centos/7/os/x86_64/Packages/yum-utils-1.1.31-45.el7.noarch.rpm
+wget https://mirrors.aliyun.com/centos/7/os/x86_64/Packages/yum-3.4.3-158.el7.centos.noarch.rpm
+wget https://mirrors.aliyun.com/centos/7/os/x86_64/Packages/yum-plugin-fastestmirror-1.1.31-45.el7.noarch.rpm
+wget https://mirrors.aliyun.com/centos/7/os/x86_64/Packages/python-urlgrabber-3.10-8.el7.noarch.rpm
+</code></pre><h1 id="五-强制安装rpm包"><a href="#五-强制安装rpm包" class="headerlink" title="五 强制安装rpm包"></a>五 强制安装rpm包</h1><h2 id="–force-–nodeps忽略依赖检测的强制安装"><a href="#–force-–nodeps忽略依赖检测的强制安装" class="headerlink" title="–force –nodeps忽略依赖检测的强制安装"></a>–force –nodeps忽略依赖检测的强制安装</h2><pre><code>rpm -ivh python-urlgrabber-3.10-8.el7.noarch.rpm --force --nodeps
+rpm -ivh yum-3.4.3-158.el7.centos.noarch.rpm --force --nodeps
+rpm -ivh yum-metadata-parser-1.1.4-10.el7.x86_64.rpm --force --nodeps
+rpm -ivh yum-plugin-fastestmirror-1.1.31-45.el7.noarch.rpm --force --nodeps
+rpm -ivh yum-utils-1.1.31-45.el7.noarch.rpm --force --nodeps
+</code></pre><h1 id="六-查看yum相关的包是否已安装"><a href="#六-查看yum相关的包是否已安装" class="headerlink" title="六 查看yum相关的包是否已安装"></a>六 查看yum相关的包是否已安装</h1><pre><code>[root@localhost ~]# rpm -qa |grep yum
+yum-utils-1.1.31-45.el7.noarch
+yum-3.4.3-158.el7.centos.noarch
+yum-plugin-fastestmirror-1.1.31-45.el7.noarch
+yum-metadata-parser-1.1.4-10.el7.x86_64
+[root@localhost ~]# rpm -qa |grep python-urlgrabber
+python-urlgrabber-3.10-8.el7.noarch
+</code></pre><h1 id="七-修改repo"><a href="#七-修改repo" class="headerlink" title="七 修改repo"></a>七 修改repo</h1><h2 id="1-下载源文件"><a href="#1-下载源文件" class="headerlink" title="1 下载源文件"></a>1 下载源文件</h2><pre><code>curl -o /etc/yum.repos.d/CentOS-7.repo http://mirrors.aliyun.com/repo/Centos-7.repo
+</code></pre><h2 id="2-需要把CentOS-7-repo文件中的-releasever全部替换为7"><a href="#2-需要把CentOS-7-repo文件中的-releasever全部替换为7" class="headerlink" title="2 需要把CentOS-7.repo文件中的$releasever全部替换为7"></a>2 需要把CentOS-7.repo文件中的$releasever全部替换为7</h2><pre><code>cd /etc/yum.repos.d/
+vim CentOS-7.repo
+</code></pre><h2 id="3-在vim中执行-s-releasever-7-g快速替换。保存退出。"><a href="#3-在vim中执行-s-releasever-7-g快速替换。保存退出。" class="headerlink" title="3 在vim中执行:%s/$releasever/7/g快速替换。保存退出。"></a>3 在vim中执行:%s/$releasever/7/g快速替换。保存退出。</h2><pre><code>:%s/$releasever/7/g
+</code></pre><h1 id="八-清空重载yum"><a href="#八-清空重载yum" class="headerlink" title="八 清空重载yum"></a>八 清空重载yum</h1><pre><code>yum clean all
+yum update
+</code></pre><h1 id="参考链接："><a href="#参考链接：" class="headerlink" title="参考链接："></a>参考链接：</h1><p><a href="https://blog.csdn.net/feng_zhiyu/article/details/80464336" target="_blank" rel="noopener">https://blog.csdn.net/feng_zhiyu/article/details/80464336</a><br><a href="https://www.jianshu.com/p/fd00c304ae5d" target="_blank" rel="noopener">https://www.jianshu.com/p/fd00c304ae5d</a></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/RedHat/" rel="tag"># RedHat</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/10/19/制作自定义CentOS-7安装镜像ISO/" rel="next" title="制作自定义CentOS 7安装镜像ISO">
+                <i class="fa fa-chevron-left"></i> 制作自定义CentOS 7安装镜像ISO
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">LittleTry</p>
+              <p class="site-description motion-element" itemprop="description">一个喜欢捣鼓的程序猿</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">7</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">6</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/littletry" title="GitHub &rarr; https://github.com/littletry" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:1109394634@qq.com" title="E-Mail &rarr; mailto:1109394634@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://weibo.com/littletry0914" title="Weibo &rarr; https://weibo.com/littletry0914" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一-卸载自带软件包"><span class="nav-number">1.</span> <span class="nav-text">一 卸载自带软件包</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二-保证上网正常"><span class="nav-number">2.</span> <span class="nav-text">二 保证上网正常</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三-进入以下网站下载对应的包"><span class="nav-number">3.</span> <span class="nav-text">三 进入以下网站下载对应的包</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-阿里云网络源地址："><span class="nav-number">3.1.</span> <span class="nav-text">1 阿里云网络源地址：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-网易163网络源地址："><span class="nav-number">3.2.</span> <span class="nav-text">2 网易163网络源地址：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-CentOS网络源地址："><span class="nav-number">3.3.</span> <span class="nav-text">3 CentOS网络源地址：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#四-找到安装包后下载下来"><span class="nav-number">4.</span> <span class="nav-text">四 找到安装包后下载下来</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#若出现404错误去重新查询最新rpm包的链接"><span class="nav-number">4.1.</span> <span class="nav-text">若出现404错误去重新查询最新rpm包的链接</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#五-强制安装rpm包"><span class="nav-number">5.</span> <span class="nav-text">五 强制安装rpm包</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#–force-–nodeps忽略依赖检测的强制安装"><span class="nav-number">5.1.</span> <span class="nav-text">–force –nodeps忽略依赖检测的强制安装</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#六-查看yum相关的包是否已安装"><span class="nav-number">6.</span> <span class="nav-text">六 查看yum相关的包是否已安装</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#七-修改repo"><span class="nav-number">7.</span> <span class="nav-text">七 修改repo</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-下载源文件"><span class="nav-number">7.1.</span> <span class="nav-text">1 下载源文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-需要把CentOS-7-repo文件中的-releasever全部替换为7"><span class="nav-number">7.2.</span> <span class="nav-text">2 需要把CentOS-7.repo文件中的$releasever全部替换为7</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-在vim中执行-s-releasever-7-g快速替换。保存退出。"><span class="nav-number">7.3.</span> <span class="nav-text">3 在vim中执行:%s/$releasever/7/g快速替换。保存退出。</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#八-清空重载yum"><span class="nav-number">8.</span> <span class="nav-text">八 清空重载yum</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考链接："><span class="nav-number">9.</span> <span class="nav-text">参考链接：</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">LittleTry</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> v7.0.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=7.0.0"></script>
+
+  <script src="/js/src/motion.js?v=7.0.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/src/schemes/muse.js?v=7.0.0"></script>
+
+
+
+
+  
+  <script src="/js/src/scrollspy.js?v=7.0.0"></script>
+<script src="/js/src/post-details.js?v=7.0.0"></script>
+
+
+
+  
+
+
+  <script src="/js/src/bootstrap.js?v=7.0.0"></script>
+
+
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

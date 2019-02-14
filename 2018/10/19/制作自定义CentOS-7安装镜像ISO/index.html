@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.0.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.0.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.0.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.0.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.0.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.0.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="制作自定义CentOS 7安装镜像ISO,完整版">
+<meta name="keywords" content="CentOS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="制作自定义CentOS 7安装镜像ISO">
+<meta property="og:url" content="http://yoursite.com/2018/10/19/制作自定义CentOS-7安装镜像ISO/index.html">
+<meta property="og:site_name" content="LittleTry">
+<meta property="og:description" content="制作自定义CentOS 7安装镜像ISO,完整版">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-02-14T01:28:42.780Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="制作自定义CentOS 7安装镜像ISO">
+<meta name="twitter:description" content="制作自定义CentOS 7安装镜像ISO,完整版">
+
+
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/10/19/制作自定义CentOS-7安装镜像ISO/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>制作自定义CentOS 7安装镜像ISO | LittleTry</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">LittleTry</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">一点点拼凑，一点点积累</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/19/制作自定义CentOS-7安装镜像ISO/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="LittleTry">
+      <meta itemprop="description" content="一个喜欢捣鼓的程序猿">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LittleTry">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">制作自定义CentOS 7安装镜像ISO
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-10-19 12:34:00" itemprop="dateCreated datePublished" datetime="2018-10-19T12:34:00+08:00">2018-10-19</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-02-14 09:28:42" itemprop="dateModified" datetime="2019-02-14T09:28:42+08:00">2019-02-14</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+            <div class="post-description">制作自定义CentOS 7安装镜像ISO,完整版</div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本文以CentOS 7.2为例</p>
+<blockquote>
+<p>1、制作完成的ISO在安装过程中可以选择自定义的软件包<br>2、制作完成的ISO全自动安装，不需要在安装过程中进行任何选择操作</p>
+</blockquote>
+<h1 id="一-CentOS原版镜像下载链接"><a href="#一-CentOS原版镜像下载链接" class="headerlink" title="一 CentOS原版镜像下载链接"></a>一 CentOS原版镜像下载链接</h1><p><a href="http://vault.centos.org/" target="_blank" rel="noopener">http://vault.centos.org/</a></p>
+<h1 id="二-使用VMware-Workstation-14-Pro安装CentOS-7-2原版系统"><a href="#二-使用VMware-Workstation-14-Pro安装CentOS-7-2原版系统" class="headerlink" title="二 使用VMware Workstation 14 Pro安装CentOS 7.2原版系统"></a>二 使用VMware Workstation 14 Pro安装CentOS 7.2原版系统</h1><p>安装过程：<a href="https://blog.csdn.net/guo_ridgepole/article/details/78973763" target="_blank" rel="noopener">https://blog.csdn.net/guo_ridgepole/article/details/78973763</a></p>
+<h1 id="三-制作ISO过程操作记录"><a href="#三-制作ISO过程操作记录" class="headerlink" title="三 制作ISO过程操作记录"></a>三 制作ISO过程操作记录</h1><h2 id="1-CentOS虚拟机下挂载原版镜像"><a href="#1-CentOS虚拟机下挂载原版镜像" class="headerlink" title="1 CentOS虚拟机下挂载原版镜像"></a>1 CentOS虚拟机下挂载原版镜像</h2><p>原文链接：<a href="https://blog.csdn.net/u013943420/article/details/71875489" target="_blank" rel="noopener">https://blog.csdn.net/u013943420/article/details/71875489</a></p>
+<h3 id="1-查看光盘是否已挂载"><a href="#1-查看光盘是否已挂载" class="headerlink" title="1) 查看光盘是否已挂载"></a>1) 查看光盘是否已挂载</h3><pre><code>ls -l /dev/cdrom |grep cd
+</code></pre><h3 id="2-将ISO所在的-dev-cdrom挂载到-media"><a href="#2-将ISO所在的-dev-cdrom挂载到-media" class="headerlink" title="2) 将ISO所在的/dev/cdrom挂载到/media"></a>2) 将ISO所在的/dev/cdrom挂载到/media</h3><pre><code>mount /dev/cdrom /media
+</code></pre><h2 id="2-安装制作发行版的工具"><a href="#2-安装制作发行版的工具" class="headerlink" title="2 安装制作发行版的工具"></a>2 安装制作发行版的工具</h2><pre><code>yum -y install createrepo mkisofs isomd5sum rsync
+</code></pre><h2 id="3-同步光盘文件到制作ISO的目录"><a href="#3-同步光盘文件到制作ISO的目录" class="headerlink" title="3 同步光盘文件到制作ISO的目录"></a>3 同步光盘文件到制作ISO的目录</h2><pre><code>#同步/media下的文件到/ISO路径下，除了Packages和repodata文件夹
+/usr/bin/rsync -a --exclude=Packages/ --exclude=repodata/ /media/ /ISO/
+# 在/ISO/文件夹下新建Packages和repodata文件夹
+mkdir -p /ISO/{Packages,repodata}
+</code></pre><h2 id="4-拷贝当前系统已安装的软件包到-ISO-Packages目录下（最好还是拷贝全量的原Packages下的安装包，或者是yum安装过后再生成install-log否则依赖包会不完整）"><a href="#4-拷贝当前系统已安装的软件包到-ISO-Packages目录下（最好还是拷贝全量的原Packages下的安装包，或者是yum安装过后再生成install-log否则依赖包会不完整）" class="headerlink" title="4 拷贝当前系统已安装的软件包到/ISO/Packages目录下（最好还是拷贝全量的原Packages下的安装包，或者是yum安装过后再生成install.log否则依赖包会不完整）"></a>4 拷贝当前系统已安装的软件包到/ISO/Packages目录下（最好还是拷贝全量的原Packages下的安装包，或者是yum安装过后再生成install.log否则依赖包会不完整）</h2><h3 id="1-生成install-log"><a href="#1-生成install-log" class="headerlink" title="1) 生成install.log"></a>1) 生成install.log</h3><pre><code>rpm -qa &gt;&gt; /root/install.log
+</code></pre><h3 id="2-拷贝已安装rpm"><a href="#2-拷贝已安装rpm" class="headerlink" title="2) 拷贝已安装rpm"></a>2) 拷贝已安装rpm</h3><pre><code>awk &apos;{print $0}&apos;  /root/install.log |xargs -i cp /media/Packages/{}.rpm /ISO/Packages/
+</code></pre><h2 id="5-配置yum下载指定软件包列表（rpms-list-txt）的所有依赖包"><a href="#5-配置yum下载指定软件包列表（rpms-list-txt）的所有依赖包" class="headerlink" title="5 配置yum下载指定软件包列表（rpms_list.txt）的所有依赖包"></a>5 配置yum下载指定软件包列表（rpms_list.txt）的所有依赖包</h2><pre><code>#!/bin/sh   
+for line in `cat /root/rpms_list.txt`
+    do
+        echo &quot;download file&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;and it&apos;s denpendies&quot;$line
+        yum install -y --downloadonly --downloaddir=/root/test/ $line
+        #或者先安装yum -y install yum-utils再yumdownloader $line
+    done
+#yum查找.so或者某个依赖在哪个rpm包中
+yum provides {.so名或者依赖名字}
+#拷贝包到指定目录
+cp /root/test/* /ISO/Packages/
+</code></pre><h2 id="6-修改isolinux-cfg文件"><a href="#6-修改isolinux-cfg文件" class="headerlink" title="6 修改isolinux.cfg文件"></a>6 修改isolinux.cfg文件</h2><pre><code>label linux
+menu label ^Install CentOS 7
+kernel vmlinuz
+#这样是不自动安装
+append initrd=initrd.img inst.stage2=hd:LABEL=CentOS7 quiet
+#这样配置会自动安装
+append initrd=initrd.img inst.stage2=hd:LABEL=CentOS7 inst.ks=cdrom:/isolinux/ks.cfg quiet
+</code></pre><blockquote>
+<p>inst.ks为ks.cfg文件位置；<br>inst.stage2为安装介质位置，hd:LABEL为介质标签，例如CentOS7。这个和后续生成ISO镜像文件的命令genisoimage的参数-V有关。<br>最好是把所有hd:LABEL后面的值都替换为一个后面会用到的字符串，如CentOS7</p>
+</blockquote>
+<h2 id="7-修改自动化安装配置文件"><a href="#7-修改自动化安装配置文件" class="headerlink" title="7 修改自动化安装配置文件"></a>7 修改自动化安装配置文件</h2><pre><code>cp /root/anaconda-ks.cfg /ISO/isolinux/ks.cfg
+</code></pre><p>在%packages与%end中间加入需要自定义安装的包组</p>
+<pre><code>%packages
+@^web-server-environment
+@base
+@core
+@java-platform
+@python-web
+@web-server
+kexec-tools
+@{自定义包组的groupid}
+%end
+</code></pre><h2 id="8-制作修改comps文件"><a href="#8-制作修改comps文件" class="headerlink" title="8 制作修改comps文件"></a>8 制作修改comps文件</h2><h3 id="1-进入-ISO目录，将“-x86-64-comps-xml”文件拷贝到-ISO-repodata路径下，并重命名成comps-xml。"><a href="#1-进入-ISO目录，将“-x86-64-comps-xml”文件拷贝到-ISO-repodata路径下，并重命名成comps-xml。" class="headerlink" title="1) 进入/ISO目录，将“*-x86_64-comps.xml”文件拷贝到/ISO/repodata路径下，并重命名成comps.xml。"></a>1) 进入/ISO目录，将“*-x86_64-comps.xml”文件拷贝到/ISO/repodata路径下，并重命名成comps.xml。</h3><pre><code>cp /media/repodata/*-x86_64-comps.xml  /ISO/repodata/comps.xml
+</code></pre><h3 id="2-编辑comps文件"><a href="#2-编辑comps文件" class="headerlink" title="2) 编辑comps文件"></a>2) 编辑comps文件</h3><h4 id="1-添加定制rpm包"><a href="#1-添加定制rpm包" class="headerlink" title="(1) 添加定制rpm包"></a>(1) 添加定制rpm包</h4><pre><code>&lt;group&gt;
+&lt;id&gt;{自定义包组的groupid}&lt;/id&gt;
+&lt;name&gt;My Dependencies&lt;/name&gt;
+&lt;default&gt;true&lt;/default&gt;
+&lt;uservisible&gt;true&lt;/uservisible&gt;
+&lt;packagelist&gt;
+  &lt;packagereq type=&quot;default&quot;&gt;python-webob&lt;/packagereq&gt;
+  ......
+&lt;/packagelist&gt;
+&lt;/group&gt;
+</code></pre><blockquote>
+<p>根据rpms_list.txt拼接packagereq</p>
+</blockquote>
+<pre><code>#!/bin/sh
+for line in `cat rpms_list.txt`
+do
+    echo &quot; &lt;packagereq type=\&quot;default\&quot;&gt;&quot;$line&quot;&lt;/packagereq&gt;&quot; &gt;&gt; /root/package.txt
+done
+</code></pre><h4 id="2-在指定的环境中添加定制的groupid"><a href="#2-在指定的环境中添加定制的groupid" class="headerlink" title="(2) 在指定的环境中添加定制的groupid"></a>(2) 在指定的环境中添加定制的groupid</h4><pre><code>&lt;environment&gt;
+    &lt;id&gt;web-server-environment&lt;/id&gt;
+    &lt;name&gt;Basic Web Server&lt;/name&gt;
+    &lt;description&gt;Server for serving static and dynamic internet content. &lt;/description&gt;
+    &lt;display_order&gt;30&lt;/display_order&gt;
+    &lt;grouplist&gt;
+      &lt;groupid&gt;base&lt;/groupid&gt;
+      &lt;groupid&gt;core&lt;/groupid&gt;
+      &lt;groupid&gt;web-server&lt;/groupid&gt;
+      &lt;groupid&gt;{自定义包组的groupid}&lt;/groupid&gt;
+    &lt;/grouplist&gt;
+&lt;/environment&gt;
+</code></pre><h2 id="9-切换到ISO-路径下，由comps-xml生成repodata包。注意当有新包加入，或者更新comps-xml文件，均需要重新生成repodata文件夹"><a href="#9-切换到ISO-路径下，由comps-xml生成repodata包。注意当有新包加入，或者更新comps-xml文件，均需要重新生成repodata文件夹" class="headerlink" title="9 切换到ISO/路径下，由comps.xml生成repodata包。注意当有新包加入，或者更新comps.xml文件，均需要重新生成repodata文件夹"></a>9 切换到ISO/路径下，由comps.xml生成repodata包。注意当有新包加入，或者更新comps.xml文件，均需要重新生成repodata文件夹</h2><pre><code>createrepo -g repodata/comps.xml ./
+</code></pre><h2 id="10-制作ISO镜像，注意参数中的-V，和上面的isolinux-cfg文件有关"><a href="#10-制作ISO镜像，注意参数中的-V，和上面的isolinux-cfg文件有关" class="headerlink" title="10 制作ISO镜像，注意参数中的-V，和上面的isolinux.cfg文件有关"></a>10 制作ISO镜像，注意参数中的-V，和上面的isolinux.cfg文件有关</h2><pre><code>cd /ISO
+genisoimage -joliet-long -V CentOS7 -o CentOS-7-2.iso -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -R -J -v -cache-inodes -T -eltorito-alt-boot -e images/efiboot.img -no-emul-boot /ISO
+</code></pre><h2 id="11-制作镜像MD5值"><a href="#11-制作镜像MD5值" class="headerlink" title="11 制作镜像MD5值"></a>11 制作镜像MD5值</h2><pre><code>implantisomd5 /ISO/CentOS-7-2.iso
+</code></pre><h2 id="12-接下来安装系统，在界面中就会有自定义包组的选项，若配置自动安装则启动时全自动安装"><a href="#12-接下来安装系统，在界面中就会有自定义包组的选项，若配置自动安装则启动时全自动安装" class="headerlink" title="12 接下来安装系统，在界面中就会有自定义包组的选项，若配置自动安装则启动时全自动安装"></a>12 接下来安装系统，在界面中就会有自定义包组的选项，若配置自动安装则启动时全自动安装</h2><h1 id="参考链接："><a href="#参考链接：" class="headerlink" title="参考链接："></a>参考链接：</h1><p><a href="https://o-my-chenjian.com/2017/11/20/DIY-A-CentOS7-System/" target="_blank" rel="noopener">https://o-my-chenjian.com/2017/11/20/DIY-A-CentOS7-System/</a><br><a href="https://blog.csdn.net/u013943420/article/details/71875489" target="_blank" rel="noopener">https://blog.csdn.net/u013943420/article/details/71875489</a><br><a href="http://yangfannie.com/771.html" target="_blank" rel="noopener">http://yangfannie.com/771.html</a><br><a href="https://blog.csdn.net/u013870094/article/details/53179531" target="_blank" rel="noopener">https://blog.csdn.net/u013870094/article/details/53179531</a><br><a href="https://www.cnblogs.com/panyouming/p/8401038.html" target="_blank" rel="noopener">https://www.cnblogs.com/panyouming/p/8401038.html</a></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/CentOS/" rel="tag"># CentOS</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/10/17/制作自定义CentOS的ISO安装盘/" rel="next" title="制作自定义CentOS的ISO安装盘">
+                <i class="fa fa-chevron-left"></i> 制作自定义CentOS的ISO安装盘
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/10/22/RedHat更换阿里云CentOS的yum源/" rel="prev" title="RedHat更换阿里云CentOS的yum源">
+                RedHat更换阿里云CentOS的yum源 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">LittleTry</p>
+              <p class="site-description motion-element" itemprop="description">一个喜欢捣鼓的程序猿</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">7</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">6</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/littletry" title="GitHub &rarr; https://github.com/littletry" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:1109394634@qq.com" title="E-Mail &rarr; mailto:1109394634@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://weibo.com/littletry0914" title="Weibo &rarr; https://weibo.com/littletry0914" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一-CentOS原版镜像下载链接"><span class="nav-number">1.</span> <span class="nav-text">一 CentOS原版镜像下载链接</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二-使用VMware-Workstation-14-Pro安装CentOS-7-2原版系统"><span class="nav-number">2.</span> <span class="nav-text">二 使用VMware Workstation 14 Pro安装CentOS 7.2原版系统</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三-制作ISO过程操作记录"><span class="nav-number">3.</span> <span class="nav-text">三 制作ISO过程操作记录</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-CentOS虚拟机下挂载原版镜像"><span class="nav-number">3.1.</span> <span class="nav-text">1 CentOS虚拟机下挂载原版镜像</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-查看光盘是否已挂载"><span class="nav-number">3.1.1.</span> <span class="nav-text">1) 查看光盘是否已挂载</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-将ISO所在的-dev-cdrom挂载到-media"><span class="nav-number">3.1.2.</span> <span class="nav-text">2) 将ISO所在的/dev/cdrom挂载到/media</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-安装制作发行版的工具"><span class="nav-number">3.2.</span> <span class="nav-text">2 安装制作发行版的工具</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-同步光盘文件到制作ISO的目录"><span class="nav-number">3.3.</span> <span class="nav-text">3 同步光盘文件到制作ISO的目录</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-拷贝当前系统已安装的软件包到-ISO-Packages目录下（最好还是拷贝全量的原Packages下的安装包，或者是yum安装过后再生成install-log否则依赖包会不完整）"><span class="nav-number">3.4.</span> <span class="nav-text">4 拷贝当前系统已安装的软件包到/ISO/Packages目录下（最好还是拷贝全量的原Packages下的安装包，或者是yum安装过后再生成install.log否则依赖包会不完整）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-生成install-log"><span class="nav-number">3.4.1.</span> <span class="nav-text">1) 生成install.log</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-拷贝已安装rpm"><span class="nav-number">3.4.2.</span> <span class="nav-text">2) 拷贝已安装rpm</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-配置yum下载指定软件包列表（rpms-list-txt）的所有依赖包"><span class="nav-number">3.5.</span> <span class="nav-text">5 配置yum下载指定软件包列表（rpms_list.txt）的所有依赖包</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-修改isolinux-cfg文件"><span class="nav-number">3.6.</span> <span class="nav-text">6 修改isolinux.cfg文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-修改自动化安装配置文件"><span class="nav-number">3.7.</span> <span class="nav-text">7 修改自动化安装配置文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8-制作修改comps文件"><span class="nav-number">3.8.</span> <span class="nav-text">8 制作修改comps文件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-进入-ISO目录，将“-x86-64-comps-xml”文件拷贝到-ISO-repodata路径下，并重命名成comps-xml。"><span class="nav-number">3.8.1.</span> <span class="nav-text">1) 进入/ISO目录，将“*-x86_64-comps.xml”文件拷贝到/ISO/repodata路径下，并重命名成comps.xml。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-编辑comps文件"><span class="nav-number">3.8.2.</span> <span class="nav-text">2) 编辑comps文件</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-添加定制rpm包"><span class="nav-number">3.8.2.1.</span> <span class="nav-text">(1) 添加定制rpm包</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-在指定的环境中添加定制的groupid"><span class="nav-number">3.8.2.2.</span> <span class="nav-text">(2) 在指定的环境中添加定制的groupid</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#9-切换到ISO-路径下，由comps-xml生成repodata包。注意当有新包加入，或者更新comps-xml文件，均需要重新生成repodata文件夹"><span class="nav-number">3.9.</span> <span class="nav-text">9 切换到ISO/路径下，由comps.xml生成repodata包。注意当有新包加入，或者更新comps.xml文件，均需要重新生成repodata文件夹</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#10-制作ISO镜像，注意参数中的-V，和上面的isolinux-cfg文件有关"><span class="nav-number">3.10.</span> <span class="nav-text">10 制作ISO镜像，注意参数中的-V，和上面的isolinux.cfg文件有关</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#11-制作镜像MD5值"><span class="nav-number">3.11.</span> <span class="nav-text">11 制作镜像MD5值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#12-接下来安装系统，在界面中就会有自定义包组的选项，若配置自动安装则启动时全自动安装"><span class="nav-number">3.12.</span> <span class="nav-text">12 接下来安装系统，在界面中就会有自定义包组的选项，若配置自动安装则启动时全自动安装</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考链接："><span class="nav-number">4.</span> <span class="nav-text">参考链接：</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">LittleTry</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> v7.0.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=7.0.0"></script>
+
+  <script src="/js/src/motion.js?v=7.0.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/src/schemes/muse.js?v=7.0.0"></script>
+
+
+
+
+  
+  <script src="/js/src/scrollspy.js?v=7.0.0"></script>
+<script src="/js/src/post-details.js?v=7.0.0"></script>
+
+
+
+  
+
+
+  <script src="/js/src/bootstrap.js?v=7.0.0"></script>
+
+
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
