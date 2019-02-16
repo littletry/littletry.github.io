@@ -104,7 +104,7 @@
 <meta property="og:site_name" content="LittleTry">
 <meta property="og:description" content="Jenkins自动部署脚本，详细介绍">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-02-15T06:49:59.907Z">
+<meta property="og:updated_time" content="2019-02-16T09:08:12.061Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Jenkins自动部署脚本">
 <meta name="twitter:description" content="Jenkins自动部署脚本，详细介绍">
@@ -406,7 +406,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2019-02-15 14:49:59" itemprop="dateModified" datetime="2019-02-15T14:49:59+08:00">2019-02-15</time>
+                <time title="修改时间：2019-02-16 17:08:12" itemprop="dateModified" datetime="2019-02-16T17:08:12+08:00">2019-02-16</time>
               
             
           </span>
@@ -460,75 +460,8 @@
       
 
       
-        <h2 id="Jenkins自动部署脚本"><a href="#Jenkins自动部署脚本" class="headerlink" title="Jenkins自动部署脚本"></a>Jenkins自动部署脚本</h2><pre><code>#!/bin/bash  
-tomcat_home=/usr/local/src/ShareZone
-new_war=/usr/local/src/ShareZone/ShareZone.war
-SHUTDOWN=$tomcat_home/bin/shutdown.sh
-STARTTOMCAT=$tomcat_home/bin/startup.sh
+        <p> </p><p align="center">Jenkins自动部署脚本</p><br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash  </span></span><br><span class="line">tomcat_home=/usr/<span class="built_in">local</span>/src/ShareZone</span><br><span class="line">new_war=/usr/<span class="built_in">local</span>/src/ShareZone/ShareZone.war</span><br><span class="line">SHUTDOWN=<span class="variable">$tomcat_home</span>/bin/shutdown.sh</span><br><span class="line">STARTTOMCAT=<span class="variable">$tomcat_home</span>/bin/startup.sh</span><br><span class="line"></span><br><span class="line"><span class="keyword">case</span> <span class="variable">$1</span> <span class="keyword">in</span>  </span><br><span class="line">-start)  </span><br><span class="line"><span class="built_in">echo</span> <span class="string">"启动$ ShareZone Tocmat ing"</span></span><br><span class="line"><span class="variable">$STARTTOMCAT</span></span><br><span class="line">;;   </span><br><span class="line">-stop)    </span><br><span class="line"><span class="built_in">echo</span> <span class="string">"关闭$ ShareZone Tocmat ing"</span></span><br><span class="line"><span class="variable">$SHUTDOWN</span></span><br><span class="line">ps -ef |grep tomcat |grep <span class="variable">$tomcat_home</span> |grep -v <span class="string">'grep'</span>|awk <span class="string">'&#123;print $2&#125;'</span> | xargs <span class="built_in">kill</span> -9</span><br><span class="line"></span><br><span class="line"><span class="comment">#删除日志文件</span></span><br><span class="line">rm  <span class="variable">$tomcat_home</span>/logs/* -rf</span><br><span class="line"><span class="comment">#删除tomcat的临时目录</span></span><br><span class="line">rm  <span class="variable">$tomcat_home</span>/work/* -rf</span><br><span class="line">;;   </span><br><span class="line">-restart)</span><br><span class="line"><span class="built_in">echo</span> <span class="string">"重启服务$ ShareZone Tocmat"</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"关闭 $ ShareZone Tocmat ing"</span></span><br><span class="line"><span class="variable">$SHUTDOWN</span></span><br><span class="line">ps -ef |grep tomcat |grep <span class="variable">$tomcat_home</span> |grep -v <span class="string">'grep'</span>|awk <span class="string">'&#123;print $2&#125;'</span> | xargs <span class="built_in">kill</span> -9</span><br><span class="line"></span><br><span class="line"><span class="comment">#删除日志文件</span></span><br><span class="line">rm  <span class="variable">$tomcat_home</span>/logs/* -rf</span><br><span class="line"><span class="comment">#删除tomcat的临时目录</span></span><br><span class="line">rm  <span class="variable">$tomcat_home</span>/work/* -rf</span><br><span class="line"></span><br><span class="line">sleep 5</span><br><span class="line"><span class="built_in">echo</span> <span class="string">"启动$ ShareZone Tomcat ing"</span></span><br><span class="line"><span class="variable">$STARTTOMCAT</span></span><br><span class="line"><span class="comment">#看启动日志</span></span><br><span class="line">;;</span><br><span class="line">-<span class="built_in">log</span>)</span><br><span class="line"><span class="comment">##cd $tomcat_home/log</span></span><br><span class="line">tail -f <span class="variable">$tomcat_home</span>/logs/catalina.out</span><br><span class="line">;; </span><br><span class="line">-d)</span><br><span class="line"><span class="built_in">echo</span> <span class="string">"开始部署新环境"</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"关闭<span class="variable">$tomcat_home</span>"</span></span><br><span class="line"><span class="variable">$SHUTDOWN</span></span><br><span class="line">ps -ef |grep tomcat |grep <span class="variable">$tomcat_home</span> |grep -v <span class="string">'grep'</span>|awk <span class="string">'&#123;print $2&#125;'</span> | xargs <span class="built_in">kill</span> -9</span><br><span class="line"></span><br><span class="line"><span class="comment"># 删除原 war 包</span></span><br><span class="line">rm <span class="variable">$tomcat_home</span>/webapps/ShareZone.war -rf</span><br><span class="line">rm <span class="variable">$tomcat_home</span>/webapps/ShareZone -rf</span><br><span class="line">sleep 5</span><br><span class="line"><span class="comment"># 拷贝新 war 包</span></span><br><span class="line">cp <span class="variable">$new_war</span> <span class="variable">$tomcat_home</span>/webapps/</span><br><span class="line">sleep 5</span><br><span class="line"><span class="comment"># 启动</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"启动<span class="variable">$tomcat_home</span>"</span></span><br><span class="line"><span class="variable">$STARTTOMCAT</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"完成部署新环境"</span></span><br><span class="line">;;</span><br><span class="line">-h)</span><br><span class="line"><span class="built_in">echo</span> <span class="string">"-start 	启动tomcat"</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"-stop		停止tomcat"</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"-restat 	重启tomcat"</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"-d		jenkins部署"</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"-log		查看log"</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"-h		帮助"</span></span><br><span class="line">;;</span><br><span class="line"><span class="keyword">esac</span></span><br></pre></td></tr></table></figure><p></p>
 
-case $1 in  
--start)  
-echo &quot;启动$ ShareZone Tocmat ing&quot;
-$STARTTOMCAT
-;;   
--stop)    
-echo &quot;关闭$ ShareZone Tocmat ing&quot;
-$SHUTDOWN
-ps -ef |grep tomcat |grep $tomcat_home |grep -v &apos;grep&apos;|awk &apos;{print $2}&apos; | xargs kill -9
-
-#删除日志文件
-rm  $tomcat_home/logs/* -rf
-#删除tomcat的临时目录
-rm  $tomcat_home/work/* -rf
-;;   
--restart)
-echo &quot;重启服务$ ShareZone Tocmat&quot;
-echo &quot;关闭 $ ShareZone Tocmat ing&quot;
-$SHUTDOWN
-ps -ef |grep tomcat |grep $tomcat_home |grep -v &apos;grep&apos;|awk &apos;{print $2}&apos; | xargs kill -9
-
-#删除日志文件
-rm  $tomcat_home/logs/* -rf
-#删除tomcat的临时目录
-rm  $tomcat_home/work/* -rf
-
-sleep 5
-echo &quot;启动$ ShareZone Tomcat ing&quot;
-$STARTTOMCAT
-#看启动日志
-;;
--log)
-##cd $tomcat_home/log
-tail -f $tomcat_home/logs/catalina.out
-;; 
--d)
-echo &quot;开始部署新环境&quot;
-echo &quot;关闭$tomcat_home&quot;
-$SHUTDOWN
-ps -ef |grep tomcat |grep $tomcat_home |grep -v &apos;grep&apos;|awk &apos;{print $2}&apos; | xargs kill -9
-
-# 删除原 war 包
-rm $tomcat_home/webapps/ShareZone.war -rf
-rm $tomcat_home/webapps/ShareZone -rf
-sleep 5
-# 拷贝新 war 包
-cp $new_war $tomcat_home/webapps/
-sleep 5
-# 启动
-echo &quot;启动$tomcat_home&quot;
-$STARTTOMCAT
-echo &quot;完成部署新环境&quot;
-;;
--h)
-echo &quot;-start     启动tomcat&quot;
-echo &quot;-stop        停止tomcat&quot;
-echo &quot;-restat     重启tomcat&quot;
-echo &quot;-d        jenkins部署&quot;
-echo &quot;-log        查看log&quot;
-echo &quot;-h        帮助&quot;
-;;
-esac
-</code></pre>
       
     </div>
 
@@ -574,8 +507,8 @@ esac
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/08/12/Finder显示隐藏文件及文件夹/" rel="next" title="Finder显示隐藏文件及文件夹">
-                <i class="fa fa-chevron-left"></i> Finder显示隐藏文件及文件夹
+              <a href="/2018/09/20/CentOS7下安装nginx并配置代理到tomcat端口/" rel="next" title="CentOS7下安装nginx并配置代理到tomcat端口">
+                <i class="fa fa-chevron-left"></i> CentOS7下安装nginx并配置代理到tomcat端口
               </a>
             
           </div>
@@ -636,17 +569,8 @@ esac
       
 
       
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            站点概览
-          </li>
-        </ul>
-      
 
-      <div class="site-overview-wrap sidebar-panel">
+      <div class="site-overview-wrap sidebar-panel sidebar-panel-active">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
             
@@ -663,7 +587,7 @@ esac
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">8</span>
+                    <span class="site-state-item-count">9</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -774,23 +698,6 @@ esac
       </div>
 
       
-      <!--noindex-->
-        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-            
-            
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Jenkins自动部署脚本"><span class="nav-number">1.</span> <span class="nav-text">Jenkins自动部署脚本</span></a></li></ol></div>
-            
-
-          </div>
-        </div>
-      <!--/noindex-->
-      
 
       
 
@@ -835,7 +742,7 @@ esac
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共4.4k字</span>
+  <span class="post-count">博客全站共4.6k字</span>
 </div>
 
         

@@ -104,7 +104,7 @@
 <meta property="og:site_name" content="LittleTry">
 <meta property="og:description" content="RedHat更换阿里云CentOS的yum源完整版">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-02-14T01:42:53.293Z">
+<meta property="og:updated_time" content="2019-02-16T09:20:01.277Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="RedHat更换阿里云CentOS的yum源">
 <meta name="twitter:description" content="RedHat更换阿里云CentOS的yum源完整版">
@@ -406,7 +406,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2019-02-14 09:42:53" itemprop="dateModified" datetime="2019-02-14T09:42:53+08:00">2019-02-14</time>
+                <time title="修改时间：2019-02-16 17:20:01" itemprop="dateModified" datetime="2019-02-16T17:20:01+08:00">2019-02-16</time>
               
             
           </span>
@@ -460,36 +460,20 @@
       
 
       
-        <h1 id="一-卸载自带软件包"><a href="#一-卸载自带软件包" class="headerlink" title="一 卸载自带软件包"></a>一 卸载自带软件包</h1><pre><code>rpm -qa | grep yum | xargs rpm -e --nodeps
-</code></pre><h1 id="二-保证上网正常"><a href="#二-保证上网正常" class="headerlink" title="二 保证上网正常"></a>二 保证上网正常</h1><pre><code>ping www.baidu.com
-</code></pre><h1 id="三-进入以下网站下载对应的包"><a href="#三-进入以下网站下载对应的包" class="headerlink" title="三 进入以下网站下载对应的包"></a>三 进入以下网站下载对应的包</h1><h2 id="1-阿里云网络源地址："><a href="#1-阿里云网络源地址：" class="headerlink" title="1 阿里云网络源地址："></a>1 阿里云网络源地址：</h2><pre><code>https://mirrors.aliyun.com/centos/7/os/x86_64/Packages/ 
+        <h1 id="一-卸载自带软件包"><a href="#一-卸载自带软件包" class="headerlink" title="一 卸载自带软件包"></a>一 卸载自带软件包</h1><figure class="highlight coq"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rpm -qa | <span class="type">grep</span> yum | <span class="type">xargs</span> rpm -e --nodeps</span><br></pre></td></tr></table></figure>
+<h1 id="二-保证上网正常"><a href="#二-保证上网正常" class="headerlink" title="二 保证上网正常"></a>二 保证上网正常</h1><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ping www<span class="selector-class">.baidu</span><span class="selector-class">.com</span></span><br></pre></td></tr></table></figure>
+<h1 id="三-进入以下网站下载对应的包"><a href="#三-进入以下网站下载对应的包" class="headerlink" title="三 进入以下网站下载对应的包"></a>三 进入以下网站下载对应的包</h1><h2 id="1-阿里云网络源地址："><a href="#1-阿里云网络源地址：" class="headerlink" title="1 阿里云网络源地址："></a>1 阿里云网络源地址：</h2><pre><code>https://mirrors.aliyun.com/centos/7/os/x86_64/Packages/
 </code></pre><h2 id="2-网易163网络源地址："><a href="#2-网易163网络源地址：" class="headerlink" title="2 网易163网络源地址："></a>2 网易163网络源地址：</h2><pre><code>http://mirrors.163.com/ 
 </code></pre><h2 id="3-CentOS网络源地址："><a href="#3-CentOS网络源地址：" class="headerlink" title="3 CentOS网络源地址："></a>3 CentOS网络源地址：</h2><pre><code>http://centos.ustc.edu.cn/centos/ 
 </code></pre><p>使用CTRL+F输入关键字查找对应的安装包即可。</p>
-<h1 id="四-找到安装包后下载下来"><a href="#四-找到安装包后下载下来" class="headerlink" title="四 找到安装包后下载下来"></a>四 找到安装包后下载下来</h1><h2 id="若出现404错误去重新查询最新rpm包的链接"><a href="#若出现404错误去重新查询最新rpm包的链接" class="headerlink" title="若出现404错误去重新查询最新rpm包的链接"></a>若出现404错误去重新查询最新rpm包的链接</h2><pre><code>wget https://mirrors.aliyun.com/centos/7/os/x86_64/Packages/yum-metadata-parser-1.1.4-10.el7.x86_64.rpm
-wget https://mirrors.aliyun.com/centos/7/os/x86_64/Packages/yum-utils-1.1.31-45.el7.noarch.rpm
-wget https://mirrors.aliyun.com/centos/7/os/x86_64/Packages/yum-3.4.3-158.el7.centos.noarch.rpm
-wget https://mirrors.aliyun.com/centos/7/os/x86_64/Packages/yum-plugin-fastestmirror-1.1.31-45.el7.noarch.rpm
-wget https://mirrors.aliyun.com/centos/7/os/x86_64/Packages/python-urlgrabber-3.10-8.el7.noarch.rpm
-</code></pre><h1 id="五-强制安装rpm包"><a href="#五-强制安装rpm包" class="headerlink" title="五 强制安装rpm包"></a>五 强制安装rpm包</h1><h2 id="–force-–nodeps忽略依赖检测的强制安装"><a href="#–force-–nodeps忽略依赖检测的强制安装" class="headerlink" title="–force –nodeps忽略依赖检测的强制安装"></a>–force –nodeps忽略依赖检测的强制安装</h2><pre><code>rpm -ivh python-urlgrabber-3.10-8.el7.noarch.rpm --force --nodeps
-rpm -ivh yum-3.4.3-158.el7.centos.noarch.rpm --force --nodeps
-rpm -ivh yum-metadata-parser-1.1.4-10.el7.x86_64.rpm --force --nodeps
-rpm -ivh yum-plugin-fastestmirror-1.1.31-45.el7.noarch.rpm --force --nodeps
-rpm -ivh yum-utils-1.1.31-45.el7.noarch.rpm --force --nodeps
-</code></pre><h1 id="六-查看yum相关的包是否已安装"><a href="#六-查看yum相关的包是否已安装" class="headerlink" title="六 查看yum相关的包是否已安装"></a>六 查看yum相关的包是否已安装</h1><pre><code>[root@localhost ~]# rpm -qa |grep yum
-yum-utils-1.1.31-45.el7.noarch
-yum-3.4.3-158.el7.centos.noarch
-yum-plugin-fastestmirror-1.1.31-45.el7.noarch
-yum-metadata-parser-1.1.4-10.el7.x86_64
-[root@localhost ~]# rpm -qa |grep python-urlgrabber
-python-urlgrabber-3.10-8.el7.noarch
-</code></pre><h1 id="七-修改repo"><a href="#七-修改repo" class="headerlink" title="七 修改repo"></a>七 修改repo</h1><h2 id="1-下载源文件"><a href="#1-下载源文件" class="headerlink" title="1 下载源文件"></a>1 下载源文件</h2><pre><code>curl -o /etc/yum.repos.d/CentOS-7.repo http://mirrors.aliyun.com/repo/Centos-7.repo
-</code></pre><h2 id="2-需要把CentOS-7-repo文件中的-releasever全部替换为7"><a href="#2-需要把CentOS-7-repo文件中的-releasever全部替换为7" class="headerlink" title="2 需要把CentOS-7.repo文件中的$releasever全部替换为7"></a>2 需要把CentOS-7.repo文件中的$releasever全部替换为7</h2><pre><code>cd /etc/yum.repos.d/
-vim CentOS-7.repo
-</code></pre><h2 id="3-在vim中执行-s-releasever-7-g快速替换。保存退出。"><a href="#3-在vim中执行-s-releasever-7-g快速替换。保存退出。" class="headerlink" title="3 在vim中执行:%s/$releasever/7/g快速替换。保存退出。"></a>3 在vim中执行:%s/$releasever/7/g快速替换。保存退出。</h2><pre><code>:%s/$releasever/7/g
-</code></pre><h1 id="八-清空重载yum"><a href="#八-清空重载yum" class="headerlink" title="八 清空重载yum"></a>八 清空重载yum</h1><pre><code>yum clean all
-yum update
-</code></pre><h1 id="参考链接："><a href="#参考链接：" class="headerlink" title="参考链接："></a>参考链接：</h1><p><a href="https://blog.csdn.net/feng_zhiyu/article/details/80464336" target="_blank" rel="noopener">https://blog.csdn.net/feng_zhiyu/article/details/80464336</a><br><a href="https://www.jianshu.com/p/fd00c304ae5d" target="_blank" rel="noopener">https://www.jianshu.com/p/fd00c304ae5d</a></p>
+<h1 id="四-找到安装包后下载下来"><a href="#四-找到安装包后下载下来" class="headerlink" title="四 找到安装包后下载下来"></a>四 找到安装包后下载下来</h1><h2 id="若出现404错误去重新查询最新rpm包的链接"><a href="#若出现404错误去重新查询最新rpm包的链接" class="headerlink" title="若出现404错误去重新查询最新rpm包的链接"></a>若出现404错误去重新查询最新rpm包的链接</h2><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">wget https:<span class="regexp">//mi</span>rrors.aliyun.com<span class="regexp">/centos/</span><span class="number">7</span><span class="regexp">/os/</span>x86_64<span class="regexp">/Packages/yum</span>-metadata-parser-<span class="number">1.1</span>.<span class="number">4</span>-<span class="number">10</span>.el7.x86_64.rpm</span><br><span class="line">wget https:<span class="regexp">//mi</span>rrors.aliyun.com<span class="regexp">/centos/</span><span class="number">7</span><span class="regexp">/os/</span>x86_64<span class="regexp">/Packages/yum</span>-utils-<span class="number">1.1</span>.<span class="number">31</span>-<span class="number">45</span>.el7.noarch.rpm</span><br><span class="line">wget https:<span class="regexp">//mi</span>rrors.aliyun.com<span class="regexp">/centos/</span><span class="number">7</span><span class="regexp">/os/</span>x86_64<span class="regexp">/Packages/yum</span>-<span class="number">3.4</span>.<span class="number">3</span>-<span class="number">158</span>.el7.centos.noarch.rpm</span><br><span class="line">wget https:<span class="regexp">//mi</span>rrors.aliyun.com<span class="regexp">/centos/</span><span class="number">7</span><span class="regexp">/os/</span>x86_64<span class="regexp">/Packages/yum</span>-plugin-fastestmirror-<span class="number">1.1</span>.<span class="number">31</span>-<span class="number">45</span>.el7.noarch.rpm</span><br><span class="line">wget https:<span class="regexp">//mi</span>rrors.aliyun.com<span class="regexp">/centos/</span><span class="number">7</span><span class="regexp">/os/</span>x86_64<span class="regexp">/Packages/</span>python-urlgrabber-<span class="number">3.10</span>-<span class="number">8</span>.el7.noarch.rpm</span><br></pre></td></tr></table></figure>
+<h1 id="五-强制安装rpm包"><a href="#五-强制安装rpm包" class="headerlink" title="五 强制安装rpm包"></a>五 强制安装rpm包</h1><h2 id="–force-–nodeps忽略依赖检测的强制安装"><a href="#–force-–nodeps忽略依赖检测的强制安装" class="headerlink" title="–force –nodeps忽略依赖检测的强制安装"></a>–force –nodeps忽略依赖检测的强制安装</h2><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">rpm</span> <span class="selector-tag">-ivh</span> <span class="selector-tag">python-urlgrabber-3</span><span class="selector-class">.10-8</span><span class="selector-class">.el7</span><span class="selector-class">.noarch</span><span class="selector-class">.rpm</span> <span class="selector-tag">--force</span> <span class="selector-tag">--nodeps</span></span><br><span class="line"><span class="selector-tag">rpm</span> <span class="selector-tag">-ivh</span> <span class="selector-tag">yum-3</span><span class="selector-class">.4</span><span class="selector-class">.3-158</span><span class="selector-class">.el7</span><span class="selector-class">.centos</span><span class="selector-class">.noarch</span><span class="selector-class">.rpm</span> <span class="selector-tag">--force</span> <span class="selector-tag">--nodeps</span></span><br><span class="line"><span class="selector-tag">rpm</span> <span class="selector-tag">-ivh</span> <span class="selector-tag">yum-metadata-parser-1</span><span class="selector-class">.1</span><span class="selector-class">.4-10</span><span class="selector-class">.el7</span><span class="selector-class">.x86_64</span><span class="selector-class">.rpm</span> <span class="selector-tag">--force</span> <span class="selector-tag">--nodeps</span></span><br><span class="line"><span class="selector-tag">rpm</span> <span class="selector-tag">-ivh</span> <span class="selector-tag">yum-plugin-fastestmirror-1</span><span class="selector-class">.1</span><span class="selector-class">.31-45</span><span class="selector-class">.el7</span><span class="selector-class">.noarch</span><span class="selector-class">.rpm</span> <span class="selector-tag">--force</span> <span class="selector-tag">--nodeps</span></span><br><span class="line"><span class="selector-tag">rpm</span> <span class="selector-tag">-ivh</span> <span class="selector-tag">yum-utils-1</span><span class="selector-class">.1</span><span class="selector-class">.31-45</span><span class="selector-class">.el7</span><span class="selector-class">.noarch</span><span class="selector-class">.rpm</span> <span class="selector-tag">--force</span> <span class="selector-tag">--nodeps</span></span><br></pre></td></tr></table></figure>
+<h1 id="六-查看yum相关的包是否已安装"><a href="#六-查看yum相关的包是否已安装" class="headerlink" title="六 查看yum相关的包是否已安装"></a>六 查看yum相关的包是否已安装</h1><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># rpm -qa |grep yum</span></span><br><span class="line">yum-utils-1.1.31-45.el7.noarch</span><br><span class="line">yum-3.4.3-158.el7.centos.noarch</span><br><span class="line">yum-plugin-fastestmirror-1.1.31-45.el7.noarch</span><br><span class="line">yum-metadata-parser-1.1.4-10.el7.x86_64</span><br><span class="line">[root@localhost ~]<span class="comment"># rpm -qa |grep python-urlgrabber</span></span><br><span class="line">python-urlgrabber-3.10-8.el7.noarch</span><br></pre></td></tr></table></figure>
+<h1 id="七-修改repo"><a href="#七-修改repo" class="headerlink" title="七 修改repo"></a>七 修改repo</h1><h2 id="1-下载源文件"><a href="#1-下载源文件" class="headerlink" title="1 下载源文件"></a>1 下载源文件</h2><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -o /etc/yum<span class="selector-class">.repos</span><span class="selector-class">.d</span>/CentOS-<span class="number">7</span><span class="selector-class">.repo</span> http:<span class="comment">//mirrors.aliyun.com/repo/Centos-7.repo</span></span><br></pre></td></tr></table></figure>
+<h2 id="2-需要把CentOS-7-repo文件中的-releasever全部替换为7"><a href="#2-需要把CentOS-7-repo文件中的-releasever全部替换为7" class="headerlink" title="2 需要把CentOS-7.repo文件中的$releasever全部替换为7"></a>2 需要把CentOS-7.repo文件中的$releasever全部替换为7</h2><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd /etc/yum<span class="selector-class">.repos</span><span class="selector-class">.d</span>/</span><br><span class="line">vim CentOS-<span class="number">7</span>.repo</span><br></pre></td></tr></table></figure>
+<h2 id="3-在vim中执行-s-releasever-7-g快速替换。保存退出。"><a href="#3-在vim中执行-s-releasever-7-g快速替换。保存退出。" class="headerlink" title="3 在vim中执行:%s/$releasever/7/g快速替换。保存退出。"></a>3 在vim中执行:%s/$releasever/7/g快速替换。保存退出。</h2><figure class="highlight elixir"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">:%s/</span><span class="variable">$releasever</span>/<span class="number">7</span>/g</span><br></pre></td></tr></table></figure>
+<h1 id="八-清空重载yum"><a href="#八-清空重载yum" class="headerlink" title="八 清空重载yum"></a>八 清空重载yum</h1><figure class="highlight q"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">yum clean <span class="built_in">all</span></span><br><span class="line">yum <span class="keyword">update</span></span><br></pre></td></tr></table></figure>
+<h1 id="参考链接："><a href="#参考链接：" class="headerlink" title="参考链接："></a>参考链接：</h1><p><a href="https://blog.csdn.net/feng_zhiyu/article/details/80464336" target="_blank" rel="noopener">https://blog.csdn.net/feng_zhiyu/article/details/80464336</a><br><a href="https://www.jianshu.com/p/fd00c304ae5d" target="_blank" rel="noopener">https://www.jianshu.com/p/fd00c304ae5d</a></p>
 
       
     </div>
@@ -621,7 +605,7 @@ yum update
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">8</span>
+                    <span class="site-state-item-count">9</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -793,7 +777,7 @@ yum update
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共4.4k字</span>
+  <span class="post-count">博客全站共4.6k字</span>
 </div>
 
         

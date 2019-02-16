@@ -105,7 +105,7 @@
 <meta property="og:description" content="安装制作自定义CentOS镜像">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://upload-images.jianshu.io/upload_images/9270069-4026d2bbc01126f4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:updated_time" content="2019-02-13T10:11:59.771Z">
+<meta property="og:updated_time" content="2019-02-16T09:03:25.171Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="制作自定义CentOS的ISO安装盘">
 <meta name="twitter:description" content="安装制作自定义CentOS镜像">
@@ -408,7 +408,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2019-02-13 18:11:59" itemprop="dateModified" datetime="2019-02-13T18:11:59+08:00">2019-02-13</time>
+                <time title="修改时间：2019-02-16 17:03:25" itemprop="dateModified" datetime="2019-02-16T17:03:25+08:00">2019-02-16</time>
               
             
           </span>
@@ -465,67 +465,29 @@
         <h1 id="一-下载CentOS镜像文件"><a href="#一-下载CentOS镜像文件" class="headerlink" title="一 下载CentOS镜像文件"></a>一 下载CentOS镜像文件</h1><p>CentOS镜像链接：<a href="http://vault.centos.org/" target="_blank" rel="noopener">http://vault.centos.org/</a><br>本文以CentOS 7.3为例</p>
 <h1 id="二-使用vmware安装centos"><a href="#二-使用vmware安装centos" class="headerlink" title="二 使用vmware安装centos"></a>二 使用vmware安装centos</h1><p>安装过程自行百度</p>
 <h1 id="三-制作ISO过程记录"><a href="#三-制作ISO过程记录" class="headerlink" title="三 制作ISO过程记录"></a>三 制作ISO过程记录</h1><h2 id="1-CentOS虚拟机下挂载镜像"><a href="#1-CentOS虚拟机下挂载镜像" class="headerlink" title="1 CentOS虚拟机下挂载镜像"></a>1 CentOS虚拟机下挂载镜像</h2><p>原文链接：<a href="https://blog.csdn.net/u013943420/article/details/71875489" target="_blank" rel="noopener">https://blog.csdn.net/u013943420/article/details/71875489</a></p>
-<h3 id="1）查看是否有光盘挂载"><a href="#1）查看是否有光盘挂载" class="headerlink" title="1）查看是否有光盘挂载"></a>1）查看是否有光盘挂载</h3><pre><code>ls -l /dev/cdrom |grep cd
-</code></pre><h3 id="2）将ISO所在的-dev-cdrom里面的文件挂载到media"><a href="#2）将ISO所在的-dev-cdrom里面的文件挂载到media" class="headerlink" title="2）将ISO所在的/dev/cdrom里面的文件挂载到media"></a>2）将ISO所在的/dev/cdrom里面的文件挂载到media</h3><pre><code>mount /dev/cdrom /media/
-</code></pre><h2 id="2-安装制作发行版的工具"><a href="#2-安装制作发行版的工具" class="headerlink" title="2 安装制作发行版的工具"></a>2 安装制作发行版的工具</h2><pre><code>yum install -y createrepo mkisofs isomd5sum squashfs-tools
-</code></pre><h2 id="3-拷贝文件"><a href="#3-拷贝文件" class="headerlink" title="3 拷贝文件"></a>3 拷贝文件</h2><pre><code>#拷贝/media/下的文件到ISO/路径下
-mkdir /ISO
-cp -r /media/* /ISO/
-cp /media/.discinfo /ISO/
-cp /media/.treeinfo /ISO/
-chmod +w /ISO/isolinux/isolinux.cfg
-#清空ISO文件夹下的Packages和repodata文件夹
-rm -rf /ISO/Packages/*
-rm -rf /ISO/repodata/*
-</code></pre><h2 id="4-拷贝相关软件包到-ISO-Packages目录下"><a href="#4-拷贝相关软件包到-ISO-Packages目录下" class="headerlink" title="4 拷贝相关软件包到/ISO/Packages目录下"></a>4 拷贝相关软件包到/ISO/Packages目录下</h2><p>在使用Centos系统安装完成后会生成/root/install.log，该文件记录了系统安装时安装的RPM包信息。如果没有该文件，可以手动生成（新安装的干净系统）：</p>
-<h3 id="1-生成install-log"><a href="#1-生成install-log" class="headerlink" title="1) 生成install.log"></a>1) 生成install.log</h3><pre><code>rpm -qa &gt;&gt; /root/install.log
-</code></pre><h3 id="2-拷贝rpm包的脚本"><a href="#2-拷贝rpm包的脚本" class="headerlink" title="2) 拷贝rpm包的脚本"></a>2) 拷贝rpm包的脚本</h3><pre><code>awk &apos;{print $0}&apos;  /root/install.log |xargs -i cp /media/Packages/{}.rpm /ISO/Packages/
-</code></pre><p>因为需要自定制iso，需要预安装其他的包，将解决好依赖关系的包全部放入/ISO/Packages/中</p>
-<h3 id="3-配置yum下载指定软件包列表（rpms-list-txt）的所有依赖包"><a href="#3-配置yum下载指定软件包列表（rpms-list-txt）的所有依赖包" class="headerlink" title="3) 配置yum下载指定软件包列表（rpms_list.txt）的所有依赖包"></a>3) 配置yum下载指定软件包列表（rpms_list.txt）的所有依赖包</h3><pre><code>#!/bin/sh
-#(1) 只下载不安装   
-for line in `cat rpms_list.txt`
-    do
-        echo $line
-        yum install -y --downloadonly --downloaddir=/root/test/ $line
-    done
-echo &quot;安装包下载完毕，下面整理包名&quot;
-#(2)获取下载的所有包的名字到指定文件
-cd /root/test
-for file in $(ls *)
-    do
-        echo $file &gt;&gt; /root/rpm_names.txt
-    done
-echo &quot;包名全称整理完毕，下面替换后缀&quot;
-#(3)去除 “.rpm”
-sed -i &quot;s/.rpm//g&quot; /root/rpm_names.txt
-echo &quot;替换完毕&quot;
-#拷贝包到指定目录
-cp /root/test/* /ISO/Packages/
-</code></pre><h2 id="5-修改isolinux-cfg文件，将“append-initrd-initrd-img”后面的当前行内容删除，并加入“ks-cdrom-isolinux-ks-cfg”。"><a href="#5-修改isolinux-cfg文件，将“append-initrd-initrd-img”后面的当前行内容删除，并加入“ks-cdrom-isolinux-ks-cfg”。" class="headerlink" title="5 修改isolinux.cfg文件，将“append initrd=initrd.img”后面的当前行内容删除，并加入“ks=cdrom:/isolinux/ks.cfg”。"></a>5 修改isolinux.cfg文件，将“append initrd=initrd.img”后面的当前行内容删除，并加入“ks=cdrom:/isolinux/ks.cfg”。</h2><pre><code>label linux
-    menu label ^Install CentOS Linux 7
-    kernel vmlinuz
-    append initrd=initrd.img ks=cdrom:/isolinux/ks.cfg
-</code></pre><h2 id="6-修改自动化安装配置文件"><a href="#6-修改自动化安装配置文件" class="headerlink" title="6 修改自动化安装配置文件"></a>6 修改自动化安装配置文件</h2><pre><code>cp /root/anaconda-ks.cfg /ISO/isolinux/ks.cfg
-</code></pre><p>   在%packages与%end中间加入需要自定义安装的包全称，带版本号，本例使用如下的一个rpm包，并且要记得将该rpm包放到/ISO/Packages目录下<br><img src="https://upload-images.jianshu.io/upload_images/9270069-4026d2bbc01126f4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="添加自定义rpm包的位置"></p>
-<h4 id="在指定字符串“kexec-tools”后面添加rpm-names-txt中的所有包名"><a href="#在指定字符串“kexec-tools”后面添加rpm-names-txt中的所有包名" class="headerlink" title="在指定字符串“kexec-tools”后面添加rpm_names.txt中的所有包名"></a>在指定字符串“kexec-tools”后面添加rpm_names.txt中的所有包名</h4><pre><code>#!/bin/sh
-for line in `cat rpm_names.txt`
-do
-    sed -i &quot;/kexec-tools/a\\&quot;$line&quot;&quot;  ks.cfg
-done
-</code></pre><h2 id="7-生成comps-xml文件"><a href="#7-生成comps-xml文件" class="headerlink" title="7 生成comps.xml文件"></a>7 生成comps.xml文件</h2><h3 id="1）进入-ISO-repodata-目录，将“-x86-64-comps-xml”文件拷贝到-ISO-repodata路径下，并重命名成comps-xml。"><a href="#1）进入-ISO-repodata-目录，将“-x86-64-comps-xml”文件拷贝到-ISO-repodata路径下，并重命名成comps-xml。" class="headerlink" title="1）进入/ISO/repodata 目录，将“*-x86_64-comps.xml”文件拷贝到/ISO/repodata路径下，并重命名成comps.xml。"></a>1）进入/ISO/repodata 目录，将“*-x86_64-comps.xml”文件拷贝到/ISO/repodata路径下，并重命名成comps.xml。</h3><pre><code>cp /media/repodata/*-x86_64-comps.xml  /ISO/repodata/comps.xml
-</code></pre><h3 id="2）切换到ISO-路径下，生成comps-xml文件"><a href="#2）切换到ISO-路径下，生成comps-xml文件" class="headerlink" title="2）切换到ISO/路径下，生成comps.xml文件"></a>2）切换到ISO/路径下，生成comps.xml文件</h3><pre><code>createrepo -g repodata/comps.xml ./
-</code></pre><h2 id="8-进入到ISO目录，生成ISO文件"><a href="#8-进入到ISO目录，生成ISO文件" class="headerlink" title="8 进入到ISO目录，生成ISO文件"></a>8 进入到ISO目录，生成ISO文件</h2><pre><code>mkisofs -o CentOS-7.3.iso -input-charset utf-8 -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -R -J -v -T -joliet-long  /ISO/
-</code></pre><h2 id="9-生成ISO文件MD5值"><a href="#9-生成ISO文件MD5值" class="headerlink" title="9 生成ISO文件MD5值"></a>9 生成ISO文件MD5值</h2><pre><code>/usr/bin/implantisomd5 /ISO/CentOS-7.3.iso
-</code></pre><h2 id="10-使用生成的ISO镜像去安装系统时就会默认把自定义的rpm装上"><a href="#10-使用生成的ISO镜像去安装系统时就会默认把自定义的rpm装上" class="headerlink" title="10 使用生成的ISO镜像去安装系统时就会默认把自定义的rpm装上"></a>10 使用生成的ISO镜像去安装系统时就会默认把自定义的rpm装上</h2><h2 id="11-若不自动安装则需配置isolinux-cfg"><a href="#11-若不自动安装则需配置isolinux-cfg" class="headerlink" title="11 若不自动安装则需配置isolinux.cfg"></a>11 若不自动安装则需配置isolinux.cfg</h2><pre><code>label linux
-menu label ^Install CentOS 7
-kernel vmlinuz
-append initrd=initrd.img inst.stage2=hd:LABEL=CentOS7 quiet
-</code></pre><blockquote>
+<h3 id="1）查看是否有光盘挂载"><a href="#1）查看是否有光盘挂载" class="headerlink" title="1）查看是否有光盘挂载"></a>1）查看是否有光盘挂载</h3><figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ls</span> -l <span class="string">/dev/cdrom</span> |grep <span class="keyword">cd</span></span><br></pre></td></tr></table></figure>
+<h3 id="2）将ISO所在的-dev-cdrom里面的文件挂载到media"><a href="#2）将ISO所在的-dev-cdrom里面的文件挂载到media" class="headerlink" title="2）将ISO所在的/dev/cdrom里面的文件挂载到media"></a>2）将ISO所在的/dev/cdrom里面的文件挂载到media</h3><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mount <span class="regexp">/dev/</span>cdrom <span class="regexp">/media/</span></span><br></pre></td></tr></table></figure>
+<h2 id="2-安装制作发行版的工具"><a href="#2-安装制作发行版的工具" class="headerlink" title="2 安装制作发行版的工具"></a>2 安装制作发行版的工具</h2><figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum <span class="keyword">install</span> -y createrepo mkisofs isomd5sum squashfs-tools</span><br></pre></td></tr></table></figure>
+<h2 id="3-拷贝文件"><a href="#3-拷贝文件" class="headerlink" title="3 拷贝文件"></a>3 拷贝文件</h2><figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#拷贝/media/下的文件到ISO/路径下</span></span><br><span class="line">mkdir <span class="string">/ISO</span></span><br><span class="line">cp -r <span class="string">/media/</span>* <span class="string">/ISO/</span></span><br><span class="line">cp <span class="string">/media/.discinfo</span> <span class="string">/ISO/</span></span><br><span class="line">cp <span class="string">/media/.treeinfo</span> <span class="string">/ISO/</span></span><br><span class="line">chmod +w <span class="string">/ISO/isolinux/isolinux.cfg</span></span><br><span class="line"><span class="comment">#清空ISO文件夹下的Packages和repodata文件夹</span></span><br><span class="line">rm -rf <span class="string">/ISO/Packages/</span>*</span><br><span class="line">rm -rf <span class="string">/ISO/repodata/</span>*</span><br></pre></td></tr></table></figure>
+<h2 id="4-拷贝相关软件包到-ISO-Packages目录下"><a href="#4-拷贝相关软件包到-ISO-Packages目录下" class="headerlink" title="4 拷贝相关软件包到/ISO/Packages目录下"></a>4 拷贝相关软件包到/ISO/Packages目录下</h2><p>在使用Centos系统安装完成后会生成/root/install.log，该文件记录了系统安装时安装的RPM包信息。如果没有该文件，可以手动生成（新安装的干净系统）：</p>
+<h3 id="1-生成install-log"><a href="#1-生成install-log" class="headerlink" title="1) 生成install.log"></a>1) 生成install.log</h3><figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rpm -qa <span class="meta">&gt;&gt; </span>/root/install.log</span><br></pre></td></tr></table></figure>
+<h3 id="2-拷贝rpm包的脚本"><a href="#2-拷贝rpm包的脚本" class="headerlink" title="2) 拷贝rpm包的脚本"></a>2) 拷贝rpm包的脚本</h3><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">awk <span class="string">'&#123;print $0&#125;'</span>  <span class="regexp">/root/i</span>nstall.log |xargs -i cp <span class="regexp">/media/</span>Packages<span class="regexp">/&#123;&#125;.rpm /</span>ISO<span class="regexp">/Packages/</span></span><br></pre></td></tr></table></figure>
+<p>因为需要自定制iso，需要预安装其他的包，将解决好依赖关系的包全部放入/ISO/Packages/中</p>
+<h3 id="3-配置yum下载指定软件包列表（rpms-list-txt）的所有依赖包"><a href="#3-配置yum下载指定软件包列表（rpms-list-txt）的所有依赖包" class="headerlink" title="3) 配置yum下载指定软件包列表（rpms_list.txt）的所有依赖包"></a>3) 配置yum下载指定软件包列表（rpms_list.txt）的所有依赖包</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/sh</span></span><br><span class="line"><span class="comment">#(1) 只下载不安装   </span></span><br><span class="line"><span class="keyword">for</span> line <span class="keyword">in</span> `cat rpms_list.txt`</span><br><span class="line">	<span class="keyword">do</span></span><br><span class="line">		<span class="built_in">echo</span> <span class="variable">$line</span></span><br><span class="line">		yum install -y --downloadonly --downloaddir=/root/<span class="built_in">test</span>/ <span class="variable">$line</span></span><br><span class="line">	<span class="keyword">done</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"安装包下载完毕，下面整理包名"</span></span><br><span class="line"><span class="comment">#(2)获取下载的所有包的名字到指定文件</span></span><br><span class="line"><span class="built_in">cd</span> /root/<span class="built_in">test</span></span><br><span class="line"><span class="keyword">for</span> file <span class="keyword">in</span> $(ls *)</span><br><span class="line">	<span class="keyword">do</span></span><br><span class="line">		<span class="built_in">echo</span> <span class="variable">$file</span> &gt;&gt; /root/rpm_names.txt</span><br><span class="line">	<span class="keyword">done</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"包名全称整理完毕，下面替换后缀"</span></span><br><span class="line"><span class="comment">#(3)去除 “.rpm”</span></span><br><span class="line">sed -i <span class="string">"s/.rpm//g"</span> /root/rpm_names.txt</span><br><span class="line"><span class="built_in">echo</span> <span class="string">"替换完毕"</span></span><br><span class="line"><span class="comment">#拷贝包到指定目录</span></span><br><span class="line">cp /root/<span class="built_in">test</span>/* /ISO/Packages/</span><br></pre></td></tr></table></figure>
+<h2 id="5-修改isolinux-cfg文件，将“append-initrd-initrd-img”后面的当前行内容删除，并加入“ks-cdrom-isolinux-ks-cfg”。"><a href="#5-修改isolinux-cfg文件，将“append-initrd-initrd-img”后面的当前行内容删除，并加入“ks-cdrom-isolinux-ks-cfg”。" class="headerlink" title="5 修改isolinux.cfg文件，将“append initrd=initrd.img”后面的当前行内容删除，并加入“ks=cdrom:/isolinux/ks.cfg”。"></a>5 修改isolinux.cfg文件，将“append initrd=initrd.img”后面的当前行内容删除，并加入“ks=cdrom:/isolinux/ks.cfg”。</h2><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">label</span> linux</span><br><span class="line"><span class="selector-tag">menu</span> <span class="selector-tag">label</span> ^Install CentOS Linux <span class="number">7</span></span><br><span class="line">kernel vmlinuz</span><br><span class="line">append initrd=initrd<span class="selector-class">.img</span> ks=cdrom:/isolinux/ks.cfg</span><br></pre></td></tr></table></figure>
+<h2 id="6-修改自动化安装配置文件"><a href="#6-修改自动化安装配置文件" class="headerlink" title="6 修改自动化安装配置文件"></a>6 修改自动化安装配置文件</h2><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cp <span class="regexp">/root/</span>anaconda-ks.cfg <span class="regexp">/ISO/i</span>solinux<span class="regexp">/ks.cfg</span></span><br></pre></td></tr></table></figure>
+<p>   在%packages与%end中间加入需要自定义安装的包全称，带版本号，本例使用如下的一个rpm包，并且要记得将该rpm包放到/ISO/Packages目录下<br><img src="https://upload-images.jianshu.io/upload_images/9270069-4026d2bbc01126f4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="添加自定义rpm包的位置"></p>
+<h4 id="在指定字符串“kexec-tools”后面添加rpm-names-txt中的所有包名"><a href="#在指定字符串“kexec-tools”后面添加rpm-names-txt中的所有包名" class="headerlink" title="在指定字符串“kexec-tools”后面添加rpm_names.txt中的所有包名"></a>在指定字符串“kexec-tools”后面添加rpm_names.txt中的所有包名</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/sh</span></span><br><span class="line"><span class="keyword">for</span> line <span class="keyword">in</span> `cat rpm_names.txt`</span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">    sed -i <span class="string">"/kexec-tools/a\\"</span><span class="variable">$line</span><span class="string">""</span>  ks.cfg</span><br><span class="line"><span class="keyword">done</span></span><br></pre></td></tr></table></figure>
+<h2 id="7-生成comps-xml文件"><a href="#7-生成comps-xml文件" class="headerlink" title="7 生成comps.xml文件"></a>7 生成comps.xml文件</h2><h3 id="1）进入-ISO-repodata-目录，将“-x86-64-comps-xml”文件拷贝到-ISO-repodata路径下，并重命名成comps-xml。"><a href="#1）进入-ISO-repodata-目录，将“-x86-64-comps-xml”文件拷贝到-ISO-repodata路径下，并重命名成comps-xml。" class="headerlink" title="1）进入/ISO/repodata 目录，将“*-x86_64-comps.xml”文件拷贝到/ISO/repodata路径下，并重命名成comps.xml。"></a>1）进入/ISO/repodata 目录，将“*-x86_64-comps.xml”文件拷贝到/ISO/repodata路径下，并重命名成comps.xml。</h3><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cp <span class="regexp">/media/</span>repodata<span class="regexp">/*-x86_64-comps.xml  /</span>ISO<span class="regexp">/repodata/</span>comps.xml</span><br></pre></td></tr></table></figure>
+<h3 id="2）切换到ISO-路径下，生成comps-xml文件"><a href="#2）切换到ISO-路径下，生成comps-xml文件" class="headerlink" title="2）切换到ISO/路径下，生成comps.xml文件"></a>2）切换到ISO/路径下，生成comps.xml文件</h3><figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">createrepo -g repodata/comps.<span class="keyword">xml</span> <span class="title">./</span></span><br></pre></td></tr></table></figure>
+<h2 id="8-进入到ISO目录，生成ISO文件"><a href="#8-进入到ISO目录，生成ISO文件" class="headerlink" title="8 进入到ISO目录，生成ISO文件"></a>8 进入到ISO目录，生成ISO文件</h2><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkisofs -o CentOS-<span class="number">7.3</span><span class="selector-class">.iso</span> -input-charset utf-<span class="number">8</span> -<span class="selector-tag">b</span> isolinux/isolinux<span class="selector-class">.bin</span> -c isolinux/boot<span class="selector-class">.cat</span> -no-emul-boot -boot-load-size <span class="number">4</span> -boot-info-<span class="selector-tag">table</span> -R -J -v -T -joliet-long  /ISO/</span><br></pre></td></tr></table></figure>
+<h2 id="9-生成ISO文件MD5值"><a href="#9-生成ISO文件MD5值" class="headerlink" title="9 生成ISO文件MD5值"></a>9 生成ISO文件MD5值</h2><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="regexp">/usr/</span>bin<span class="regexp">/implantisomd5 /</span>ISO<span class="regexp">/CentOS-7.3.iso</span></span><br></pre></td></tr></table></figure>
+<h2 id="10-使用生成的ISO镜像去安装系统时就会默认把自定义的rpm装上"><a href="#10-使用生成的ISO镜像去安装系统时就会默认把自定义的rpm装上" class="headerlink" title="10 使用生成的ISO镜像去安装系统时就会默认把自定义的rpm装上"></a>10 使用生成的ISO镜像去安装系统时就会默认把自定义的rpm装上</h2><h2 id="11-若不自动安装则需配置isolinux-cfg"><a href="#11-若不自动安装则需配置isolinux-cfg" class="headerlink" title="11 若不自动安装则需配置isolinux.cfg"></a>11 若不自动安装则需配置isolinux.cfg</h2><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">label</span> linux</span><br><span class="line"><span class="selector-tag">menu</span> <span class="selector-tag">label</span> ^Install CentOS <span class="number">7</span></span><br><span class="line">kernel vmlinuz</span><br><span class="line">append initrd=initrd<span class="selector-class">.img</span> inst.stage2=hd:LABEL=CentOS7 quiet</span><br></pre></td></tr></table></figure>
+<blockquote>
 <p>inst.stage2为安装介质位置，hd:LABEL为介质标签，例如CentOS7。这个和生成ISO镜像文件的命令genisoimage的参数-V有关。</p>
 </blockquote>
-<h2 id="制作命令"><a href="#制作命令" class="headerlink" title="制作命令"></a>制作命令</h2><pre><code># 注意参数中的-V，和上面的isolinux.cfg文件有关
-genisoimage -joliet-long -V CentOS7 -o CentOS-7-3.iso -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -R -J -v -cache-inodes -T -eltorito-alt-boot -e images/efiboot.img -no-emul-boot /ISO
-</code></pre><p>参考链接：<br><a href="https://blog.csdn.net/u013943420/article/details/71875489" target="_blank" rel="noopener">https://blog.csdn.net/u013943420/article/details/71875489</a><br><a href="http://yangfannie.com/771.html" target="_blank" rel="noopener">http://yangfannie.com/771.html</a><br><a href="https://blog.csdn.net/u013870094/article/details/53179531" target="_blank" rel="noopener">https://blog.csdn.net/u013870094/article/details/53179531</a><br><a href="https://www.cnblogs.com/panyouming/p/8401038.html" target="_blank" rel="noopener">https://www.cnblogs.com/panyouming/p/8401038.html</a><br>貌似这个是最详细的：<br><a href="https://o-my-chenjian.com/2017/11/20/DIY-A-CentOS7-System/" target="_blank" rel="noopener">https://o-my-chenjian.com/2017/11/20/DIY-A-CentOS7-System/</a></p>
+<h2 id="制作命令"><a href="#制作命令" class="headerlink" title="制作命令"></a>制作命令</h2><figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 注意参数中的-V，和上面的isolinux.cfg文件有关</span><br><span class="line">genisoimage -joliet-long -V CentOS7 -o CentOS-7-3.iso -b isolinux/isolinux.bin -c isolinux/<span class="keyword">boot</span>.<span class="keyword">cat</span> -<span class="keyword">no</span>-emul-<span class="keyword">boot</span> -<span class="keyword">boot</span>-load-size 4 -<span class="keyword">boot</span>-info-<span class="keyword">table</span> -R -J -v -cache-inodes -T -eltorito-alt-<span class="keyword">boot</span> -<span class="keyword">e</span> images/efiboot.img -<span class="keyword">no</span>-emul-<span class="keyword">boot</span> /ISO</span><br></pre></td></tr></table></figure>
+<p>参考链接：<br><a href="https://blog.csdn.net/u013943420/article/details/71875489" target="_blank" rel="noopener">https://blog.csdn.net/u013943420/article/details/71875489</a><br><a href="http://yangfannie.com/771.html" target="_blank" rel="noopener">http://yangfannie.com/771.html</a><br><a href="https://blog.csdn.net/u013870094/article/details/53179531" target="_blank" rel="noopener">https://blog.csdn.net/u013870094/article/details/53179531</a><br><a href="https://www.cnblogs.com/panyouming/p/8401038.html" target="_blank" rel="noopener">https://www.cnblogs.com/panyouming/p/8401038.html</a><br>貌似这个是最详细的：<br><a href="https://o-my-chenjian.com/2017/11/20/DIY-A-CentOS7-System/" target="_blank" rel="noopener">https://o-my-chenjian.com/2017/11/20/DIY-A-CentOS7-System/</a></p>
 
       
     </div>
@@ -661,7 +623,7 @@ genisoimage -joliet-long -V CentOS7 -o CentOS-7-3.iso -b isolinux/isolinux.bin -
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">8</span>
+                    <span class="site-state-item-count">9</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -833,7 +795,7 @@ genisoimage -joliet-long -V CentOS7 -o CentOS-7-3.iso -b isolinux/isolinux.bin -
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共4.4k字</span>
+  <span class="post-count">博客全站共4.6k字</span>
 </div>
 
         
