@@ -96,25 +96,25 @@
 
 
 
-  <meta name="description" content="Jenkins自动部署脚本，详细介绍">
-<meta name="keywords" content="Jenkins">
+  <meta name="description" content="Nginx或tomcat8配置https">
+<meta name="keywords" content="Server">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Jenkins自动部署脚本">
-<meta property="og:url" content="http://yoursite.com/2018/09/25/Jenkins自动部署脚本/index.html">
+<meta property="og:title" content="Nginx或tomcat8配置https">
+<meta property="og:url" content="http://yoursite.com/2018/10/10/Nginx或tomcat8配置https/index.html">
 <meta property="og:site_name" content="LittleTry">
-<meta property="og:description" content="Jenkins自动部署脚本，详细介绍">
+<meta property="og:description" content="Nginx或tomcat8配置https">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-02-16T09:25:14.435Z">
+<meta property="og:updated_time" content="2019-02-16T09:26:30.499Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Jenkins自动部署脚本">
-<meta name="twitter:description" content="Jenkins自动部署脚本，详细介绍">
+<meta name="twitter:title" content="Nginx或tomcat8配置https">
+<meta name="twitter:description" content="Nginx或tomcat8配置https">
 
 
 
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2018/09/25/Jenkins自动部署脚本/">
+  <link rel="canonical" href="http://yoursite.com/2018/10/10/Nginx或tomcat8配置https/">
 
 
 
@@ -124,7 +124,7 @@
   };
 </script>
 
-  <title>Jenkins自动部署脚本 | LittleTry</title>
+  <title>Nginx或tomcat8配置https | LittleTry</title>
   
 
 
@@ -346,7 +346,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/25/Jenkins自动部署脚本/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/10/Nginx或tomcat8配置https/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="LittleTry">
@@ -363,7 +363,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Jenkins自动部署脚本
+          <h1 class="post-title" itemprop="name headline">Nginx或tomcat8配置https
 
               
             
@@ -389,7 +389,7 @@
                 
               
 
-              <time title="创建时间：2018-09-25 10:29:53" itemprop="dateCreated datePublished" datetime="2018-09-25T10:29:53+08:00">2018-09-25</time>
+              <time title="创建时间：2018-10-10 15:37:45" itemprop="dateCreated datePublished" datetime="2018-10-10T15:37:45+08:00">2018-10-10</time>
             
 
             
@@ -406,7 +406,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2019-02-16 17:25:14" itemprop="dateModified" datetime="2019-02-16T17:25:14+08:00">2019-02-16</time>
+                <time title="修改时间：2019-02-16 17:26:30" itemprop="dateModified" datetime="2019-02-16T17:26:30+08:00">2019-02-16</time>
               
             
           </span>
@@ -444,7 +444,7 @@
           
 
           
-            <div class="post-description">Jenkins自动部署脚本，详细介绍</div>
+            <div class="post-description">Nginx或tomcat8配置https</div>
           
 
         </div>
@@ -460,77 +460,9 @@
       
 
       
-         <p align="center">Jenkins自动部署脚本</p>
-
-<pre><code>#!/bin/bash  
-tomcat_home=/usr/local/src/ShareZone
-new_war=/usr/local/src/ShareZone/ShareZone.war
-SHUTDOWN=$tomcat_home/bin/shutdown.sh
-STARTTOMCAT=$tomcat_home/bin/startup.sh
-
-case $1 in  
--start)  
-echo &quot;启动$ ShareZone Tocmat ing&quot;
-$STARTTOMCAT
-;;   
--stop)    
-echo &quot;关闭$ ShareZone Tocmat ing&quot;
-$SHUTDOWN
-ps -ef |grep tomcat |grep $tomcat_home |grep -v &apos;grep&apos;|awk &apos;{print $2}&apos; | xargs kill -9
-
-#删除日志文件
-rm  $tomcat_home/logs/* -rf
-#删除tomcat的临时目录
-rm  $tomcat_home/work/* -rf
-;;   
--restart)
-echo &quot;重启服务$ ShareZone Tocmat&quot;
-echo &quot;关闭 $ ShareZone Tocmat ing&quot;
-$SHUTDOWN
-ps -ef |grep tomcat |grep $tomcat_home |grep -v &apos;grep&apos;|awk &apos;{print $2}&apos; | xargs kill -9
-
-#删除日志文件
-rm  $tomcat_home/logs/* -rf
-#删除tomcat的临时目录
-rm  $tomcat_home/work/* -rf
-
-sleep 5
-echo &quot;启动$ ShareZone Tomcat ing&quot;
-$STARTTOMCAT
-#看启动日志
-;;
--log)
-##cd $tomcat_home/log
-tail -f $tomcat_home/logs/catalina.out
-;; 
--d)
-echo &quot;开始部署新环境&quot;
-echo &quot;关闭$tomcat_home&quot;
-$SHUTDOWN
-ps -ef |grep tomcat |grep $tomcat_home |grep -v &apos;grep&apos;|awk &apos;{print $2}&apos; | xargs kill -9
-
-# 删除原 war 包
-rm $tomcat_home/webapps/ShareZone.war -rf
-rm $tomcat_home/webapps/ShareZone -rf
-sleep 5
-# 拷贝新 war 包
-cp $new_war $tomcat_home/webapps/
-sleep 5
-# 启动
-echo &quot;启动$tomcat_home&quot;
-$STARTTOMCAT
-echo &quot;完成部署新环境&quot;
-;;
--h)
-echo &quot;-start     启动tomcat&quot;
-echo &quot;-stop        停止tomcat&quot;
-echo &quot;-restat     重启tomcat&quot;
-echo &quot;-d        jenkins部署&quot;
-echo &quot;-log        查看log&quot;
-echo &quot;-h        帮助&quot;
-;;
-esac
-</code></pre>
+        <h2 id="前提申请免费域名https证书"><a href="#前提申请免费域名https证书" class="headerlink" title="前提申请免费域名https证书"></a>前提申请免费域名https证书</h2><h3 id="一、nginx配置https并转发到tomcat"><a href="#一、nginx配置https并转发到tomcat" class="headerlink" title="一、nginx配置https并转发到tomcat"></a>一、nginx配置https并转发到tomcat</h3><h4 id="1、Nginx配置文件"><a href="#1、Nginx配置文件" class="headerlink" title="1、Nginx配置文件"></a>1、Nginx配置文件</h4><figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">  server &#123;</span><br><span class="line">      listen       80;</span><br><span class="line">      listen       443 ssl default_server;</span><br><span class="line">      server_name  &#123;域名&#125;;</span><br><span class="line">      <span class="comment"># root         /usr/share/nginx/html;</span></span><br><span class="line"></span><br><span class="line">      <span class="comment"># 解释：当此虚拟站点只允许https访问时，当用http访问时nginx会报出497错误码</span></span><br><span class="line">ssl on;</span><br><span class="line">error_page 497  https:<span class="string">//</span>$host$uri$args;</span><br><span class="line"></span><br><span class="line">ssl_certificate     <span class="string">/etc/nginx/cer/</span>&#123;域名&#125;<span class="string">.crt</span>;   <span class="comment">#证书路径</span></span><br><span class="line">ssl_certificate_key <span class="string">/etc/nginx/cer/</span>&#123;域名&#125;<span class="string">.key</span>;   <span class="comment">#私钥路径</span></span><br><span class="line"></span><br><span class="line">ssl_session_cache   shared<span class="function">:SSL</span><span class="function">:10m</span>;</span><br><span class="line">ssl_session_timeout 10m;</span><br><span class="line">ssl_protocols TLSv1 TLSv1.1 TLSv1.2;</span><br><span class="line">ssl_ciphers ECDH<span class="function">:AESGCM</span><span class="function">:HIGH</span><span class="function">:RSA</span>+3DES:!RC4:!DH:!MD5:!aNULL:!eNULL;</span><br><span class="line">ssl_prefer_server_ciphers on;</span><br><span class="line">      <span class="comment"># Load configuration files for the default server block.</span></span><br><span class="line">      include <span class="string">/etc/nginx/default.d/</span>*<span class="string">.conf</span>;</span><br><span class="line">      client_max_body_size 50m;</span><br><span class="line">      location / &#123;</span><br><span class="line">		proxy_redirect off;</span><br><span class="line">              proxy_pass http:<span class="string">//127.0.0.1</span><span class="function">:8080</span>;</span><br><span class="line">              proxy_<span class="keyword">set</span>_header Host      $host;</span><br><span class="line">              proxy_<span class="keyword">set</span>_header X-Real-IP $remote_addr;</span><br><span class="line">              proxy_<span class="keyword">set</span>_header X-Forwarded-For $proxy_add_x_forwarded_for;</span><br><span class="line">              proxy_redirect default ;</span><br><span class="line">	</span><br><span class="line">      &#125;</span><br><span class="line">      error_page 404 <span class="string">/404.html</span>;</span><br><span class="line">          location = <span class="string">/40x.html</span> &#123;</span><br><span class="line">      &#125;</span><br><span class="line">      error_page 500 502 503 504 <span class="string">/50x.html</span>;</span><br><span class="line">          location = <span class="string">/50x.html</span> &#123;</span><br><span class="line">      &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<h4 id="2、-nginx配置如上之后，tomcat需配置如下"><a href="#2、-nginx配置如上之后，tomcat需配置如下" class="headerlink" title="2、 nginx配置如上之后，tomcat需配置如下"></a>2、 nginx配置如上之后，tomcat需配置如下</h4><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 1、connector配置--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">Connector</span> <span class="attr">port</span>=<span class="string">"8080"</span> <span class="attr">protocol</span>=<span class="string">"HTTP/1.1"</span></span></span><br><span class="line"><span class="tag">           <span class="attr">connectionTimeout</span>=<span class="string">"20000"</span></span></span><br><span class="line"><span class="tag">           <span class="attr">redirectPort</span>=<span class="string">"443"</span> <span class="attr">proxyPort</span>=<span class="string">"443"</span>/&gt;</span></span><br><span class="line"><span class="comment">&lt;!--2、Engine 中加入该Value--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">Engine</span> <span class="attr">name</span>=<span class="string">"Catalina"</span> <span class="attr">defaultHost</span>=<span class="string">"localhost"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">Valve</span>  <span class="attr">className</span>=<span class="string">"org.apache.catalina.valves.RemoteIpValve"</span> </span></span><br><span class="line"><span class="tag">            <span class="attr">remoteIpHeader</span>=<span class="string">"X-Forwarded-For"</span> </span></span><br><span class="line"><span class="tag">            <span class="attr">protocolHeader</span>=<span class="string">"X-Forwarded-Proto"</span> </span></span><br><span class="line"><span class="tag">            <span class="attr">protocolHeaderHttpsValue</span>=<span class="string">"https"</span> <span class="attr">httpsServerPort</span>=<span class="string">"443"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">Engine</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="二、tomcat配置https"><a href="#二、tomcat配置https" class="headerlink" title="二、tomcat配置https"></a>二、tomcat配置https</h3><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;Connector <span class="attribute">port</span>=<span class="string">"8443"</span> <span class="attribute">protocol</span>=<span class="string">"org.apache.coyote.http11.Http11Protocol"</span></span><br><span class="line">           <span class="attribute">SSLEnabled</span>=<span class="string">"true"</span></span><br><span class="line">  <span class="attribute">scheme</span>=<span class="string">"https"</span></span><br><span class="line">  <span class="attribute">secure</span>=<span class="string">"true"</span></span><br><span class="line">           <span class="attribute">clientAuth</span>=<span class="string">"false"</span></span><br><span class="line">  <span class="attribute">sslProtocol</span>=<span class="string">"TLS"</span> </span><br><span class="line">  <span class="attribute">keystoreFile</span>=<span class="string">"&#123;域名&#125;.jks全路径"</span></span><br><span class="line">           <span class="attribute">keystorePass</span>=<span class="string">"&#123;私钥，可填可不填&#125;"</span>/`</span><br></pre></td></tr></table></figure>
       
     </div>
 
@@ -563,7 +495,7 @@ esac
       
         <div class="post-tags">
           
-            <a href="/tags/Jenkins/" rel="tag"><i class="fa fa-tag"></i> Jenkins</a>
+            <a href="/tags/Server/" rel="tag"><i class="fa fa-tag"></i> Server</a>
           
         </div>
       
@@ -576,8 +508,8 @@ esac
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/09/20/CentOS7下安装nginx并配置代理到tomcat端口/" rel="next" title="CentOS7下安装nginx并配置代理到tomcat端口">
-                <i class="fa fa-chevron-left"></i> CentOS7下安装nginx并配置代理到tomcat端口
+              <a href="/2018/09/25/Jenkins自动部署脚本/" rel="next" title="Jenkins自动部署脚本">
+                <i class="fa fa-chevron-left"></i> Jenkins自动部署脚本
               </a>
             
           </div>
@@ -586,8 +518,8 @@ esac
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/10/10/Nginx或tomcat8配置https/" rel="prev" title="Nginx或tomcat8配置https">
-                Nginx或tomcat8配置https <i class="fa fa-chevron-right"></i>
+              <a href="/2018/10/13/百度地图API使用-支持https网站/" rel="prev" title="百度地图API使用-支持https网站">
+                百度地图API使用-支持https网站 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -638,8 +570,17 @@ esac
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <div class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <div class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
             
@@ -768,6 +709,23 @@ esac
         </div>
       </div>
 
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前提申请免费域名https证书"><span class="nav-number">1.</span> <span class="nav-text">前提申请免费域名https证书</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#一、nginx配置https并转发到tomcat"><span class="nav-number">1.1.</span> <span class="nav-text">一、nginx配置https并转发到tomcat</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1、Nginx配置文件"><span class="nav-number">1.1.1.</span> <span class="nav-text">1、Nginx配置文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2、-nginx配置如上之后，tomcat需配置如下"><span class="nav-number">1.1.2.</span> <span class="nav-text">2、 nginx配置如上之后，tomcat需配置如下</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、tomcat配置https"><span class="nav-number">1.2.</span> <span class="nav-text">二、tomcat配置https</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
       
 
       
@@ -934,7 +892,7 @@ esac
   
     <script>
   window.livereOptions = {
-    refer: '2018/09/25/Jenkins自动部署脚本/'
+    refer: '2018/10/10/Nginx或tomcat8配置https/'
   };
   (function(d, s) {
     var j, e = d.getElementsByTagName(s)[0];
