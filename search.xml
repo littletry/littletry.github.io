@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title><![CDATA[RedHat更换阿里云CentOS的yum源]]></title>
+    <url>%2F2018%2F10%2F22%2FRedHat%E6%9B%B4%E6%8D%A2%E9%98%BF%E9%87%8C%E4%BA%91CentOS%E7%9A%84yum%E6%BA%90%2F</url>
+    <content type="text"><![CDATA[一 卸载自带软件包rpm -qa | grep yum | xargs rpm -e --nodeps 二 保证上网正常ping www.baidu.com 三 进入以下网站下载对应的包1 阿里云网络源地址：https://mirrors.aliyun.com/centos/7/os/x86_64/Packages/ 2 网易163网络源地址：http://mirrors.163.com/ 3 CentOS网络源地址：http://centos.ustc.edu.cn/centos/ 使用CTRL+F输入关键字查找对应的安装包即可。 四 找到安装包后下载下来若出现404错误去重新查询最新rpm包的链接wget https://mirrors.aliyun.com/centos/7/os/x86_64/Packages/yum-metadata-parser-1.1.4-10.el7.x86_64.rpm wget https://mirrors.aliyun.com/centos/7/os/x86_64/Packages/yum-utils-1.1.31-45.el7.noarch.rpm wget https://mirrors.aliyun.com/centos/7/os/x86_64/Packages/yum-3.4.3-158.el7.centos.noarch.rpm wget https://mirrors.aliyun.com/centos/7/os/x86_64/Packages/yum-plugin-fastestmirror-1.1.31-45.el7.noarch.rpm wget https://mirrors.aliyun.com/centos/7/os/x86_64/Packages/python-urlgrabber-3.10-8.el7.noarch.rpm 五 强制安装rpm包–force –nodeps忽略依赖检测的强制安装rpm -ivh python-urlgrabber-3.10-8.el7.noarch.rpm --force --nodeps rpm -ivh yum-3.4.3-158.el7.centos.noarch.rpm --force --nodeps rpm -ivh yum-metadata-parser-1.1.4-10.el7.x86_64.rpm --force --nodeps rpm -ivh yum-plugin-fastestmirror-1.1.31-45.el7.noarch.rpm --force --nodeps rpm -ivh yum-utils-1.1.31-45.el7.noarch.rpm --force --nodeps 六 查看yum相关的包是否已安装[root@localhost ~]# rpm -qa |grep yum yum-utils-1.1.31-45.el7.noarch yum-3.4.3-158.el7.centos.noarch yum-plugin-fastestmirror-1.1.31-45.el7.noarch yum-metadata-parser-1.1.4-10.el7.x86_64 [root@localhost ~]# rpm -qa |grep python-urlgrabber python-urlgrabber-3.10-8.el7.noarch 七 修改repo1 下载源文件curl -o /etc/yum.repos.d/CentOS-7.repo http://mirrors.aliyun.com/repo/Centos-7.repo 2 需要把CentOS-7.repo文件中的$releasever全部替换为7cd /etc/yum.repos.d/ vim CentOS-7.repo 3 在vim中执行:%s/$releasever/7/g快速替换。保存退出。:%s/$releasever/7/g 八 清空重载yumyum clean all yum update 参考链接https://blog.csdn.net/feng_zhiyu/article/details/80464336https://www.jianshu.com/p/fd00c304ae5d]]></content>
+      <categories>
+        <category>Linux</category>
+      </categories>
+      <tags>
+        <tag>CentOS</tag>
+        <tag>RedHat</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[制作自定义CentOS 7安装镜像ISO]]></title>
+    <url>%2F2018%2F10%2F19%2F%E5%88%B6%E4%BD%9C%E8%87%AA%E5%AE%9A%E4%B9%89CentOS-7%E5%AE%89%E8%A3%85%E9%95%9C%E5%83%8FISO%2F</url>
+    <content type="text"><![CDATA[本文以CentOS 7.2为例 1、制作完成的ISO在安装过程中可以选择自定义的软件包2、制作完成的ISO全自动安装，不需要在安装过程中进行任何选择操作 一 CentOS原版镜像下载链接http://vault.centos.org/ 二 使用VMware Workstation 14 Pro安装CentOS 7.2原版系统安装过程：https://blog.csdn.net/guo_ridgepole/article/details/78973763 三 制作ISO过程操作记录1 CentOS虚拟机下挂载原版镜像原文链接：https://blog.csdn.net/u013943420/article/details/71875489 1) 查看光盘是否已挂载1ls -l /dev/cdrom |grep cd 2) 将ISO所在的/dev/cdrom挂载到/media1mount /dev/cdrom /media 2 安装制作发行版的工具1yum -y install createrepo mkisofs isomd5sum rsync 3 同步光盘文件到制作ISO的目录1234#同步/media下的文件到/ISO路径下，除了Packages和repodata文件夹/usr/bin/rsync -a --exclude=Packages/ --exclude=repodata/ /media/ /ISO/# 在/ISO/文件夹下新建Packages和repodata文件夹mkdir -p /ISO/&#123;Packages,repodata&#125; 4 拷贝当前系统已安装的软件包到/ISO/Packages目录下（最好还是拷贝全量的原Packages下的安装包，或者是yum安装过后再生成install.log否则依赖包会不完整）1) 生成install.log1rpm -qa &gt;&gt; /root/install.log 2) 拷贝已安装rpm1awk '&#123;print $0&#125;' /root/install.log |xargs -i cp /media/Packages/&#123;&#125;.rpm /ISO/Packages/ 5 配置yum下载指定软件包列表（rpms_list.txt）的所有依赖包1234567891011#!/bin/sh for line in `cat /root/rpms_list.txt` do echo "download file&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;and it's denpendies"$line yum install -y --downloadonly --downloaddir=/root/test/ $line#或者先安装yum -y install yum-utils再yumdownloader $line done#yum查找.so或者某个依赖在哪个rpm包中yum provides &#123;.so名或者依赖名字&#125;#拷贝包到指定目录cp /root/test/* /ISO/Packages/ 6 修改isolinux.cfg文件1234567label linuxmenu label ^Install CentOS 7kernel vmlinuz#这样是不自动安装append initrd=initrd.img inst.stage2=hd:LABEL=CentOS7 quiet#这样配置会自动安装append initrd=initrd.img inst.stage2=hd:LABEL=CentOS7 inst.ks=cdrom:/isolinux/ks.cfg quiet inst.ks为ks.cfg文件位置；inst.stage2为安装介质位置，hd:LABEL为介质标签，例如CentOS7。这个和后续生成ISO镜像文件的命令genisoimage的参数-V有关。最好是把所有hd:LABEL后面的值都替换为一个后面会用到的字符串，如CentOS7 7 修改自动化安装配置文件1cp /root/anaconda-ks.cfg /ISO/isolinux/ks.cfg 在%packages与%end中间加入需要自定义安装的包组12345678910%packages@^web-server-environment@base@core@java-platform@python-web@web-serverkexec-tools@&#123;自定义包组的groupid&#125;%end 8 制作修改comps文件1) 进入/ISO目录，将“*-x86_64-comps.xml”文件拷贝到/ISO/repodata路径下，并重命名成comps.xml。1cp /media/repodata/*-x86_64-comps.xml /ISO/repodata/comps.xml 2) 编辑comps文件(1) 添加定制rpm包12345678910&lt;group&gt; &lt;id&gt;&#123;自定义包组的groupid&#125;&lt;/id&gt; &lt;name&gt;My Dependencies&lt;/name&gt; &lt;default&gt;true&lt;/default&gt; &lt;uservisible&gt;true&lt;/uservisible&gt; &lt;packagelist&gt; &lt;packagereq type="default"&gt;python-webob&lt;/packagereq&gt; ...... &lt;/packagelist&gt;&lt;/group&gt; 根据rpms_list.txt拼接packagereq12345#!/bin/shfor line in `cat rpms_list.txt` do echo " &lt;packagereq type=\"default\"&gt;"$line"&lt;/packagereq&gt;" &gt;&gt; /root/package.txt done (2) 在指定的环境中添加定制的groupid123456789101112&lt;environment&gt; &lt;id&gt;web-server-environment&lt;/id&gt; &lt;name&gt;Basic Web Server&lt;/name&gt; &lt;description&gt;Server for serving static and dynamic internet content. &lt;/description&gt; &lt;display_order&gt;30&lt;/display_order&gt; &lt;grouplist&gt; &lt;groupid&gt;base&lt;/groupid&gt; &lt;groupid&gt;core&lt;/groupid&gt; &lt;groupid&gt;web-server&lt;/groupid&gt; &lt;groupid&gt;&#123;自定义包组的groupid&#125;&lt;/groupid&gt; &lt;/grouplist&gt;&lt;/environment&gt; 9 切换到ISO/路径下，由comps.xml生成repodata包。注意当有新包加入，或者更新comps.xml文件，均需要重新生成repodata文件夹1createrepo -g repodata/comps.xml ./ 10 制作ISO镜像，注意参数中的-V，和上面的isolinux.cfg文件有关12cd /ISOgenisoimage -joliet-long -V CentOS7 -o CentOS-7-2.iso -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -R -J -v -cache-inodes -T -eltorito-alt-boot -e images/efiboot.img -no-emul-boot /ISO 11 制作镜像MD5值1implantisomd5 /ISO/CentOS-7-2.iso 12 接下来安装系统，在界面中就会有自定义包组的选项，若配置自动安装则启动时全自动安装参考链接：https://o-my-chenjian.com/2017/11/20/DIY-A-CentOS7-System/https://blog.csdn.net/u013943420/article/details/71875489http://yangfannie.com/771.htmlhttps://blog.csdn.net/u013870094/article/details/53179531https://www.cnblogs.com/panyouming/p/8401038.html]]></content>
+      <categories>
+        <category>Linux</category>
+      </categories>
+      <tags>
+        <tag>CentOS</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[制作自定义CentOS的ISO安装盘]]></title>
+    <url>%2F2018%2F10%2F17%2F%E5%88%B6%E4%BD%9C%E8%87%AA%E5%AE%9A%E4%B9%89CentOS%E7%9A%84ISO%E5%AE%89%E8%A3%85%E7%9B%98%2F</url>
+    <content type="text"><![CDATA[一 下载CentOS镜像文件CentOS镜像链接：http://vault.centos.org/本文以CentOS 7.3为例 二 使用vmware安装centos安装过程自行百度 三 制作ISO过程记录1 CentOS虚拟机下挂载镜像原文链接：https://blog.csdn.net/u013943420/article/details/71875489 1）查看是否有光盘挂载1ls -l /dev/cdrom |grep cd 2）将ISO所在的/dev/cdrom里面的文件挂载到media1mount /dev/cdrom /media/ 2 安装制作发行版的工具1yum install -y createrepo mkisofs isomd5sum squashfs-tools 3 拷贝文件123456789#拷贝/media/下的文件到ISO/路径下mkdir /ISOcp -r /media/* /ISO/cp /media/.discinfo /ISO/cp /media/.treeinfo /ISO/chmod +w /ISO/isolinux/isolinux.cfg#清空ISO文件夹下的Packages和repodata文件夹rm -rf /ISO/Packages/*rm -rf /ISO/repodata/* 4 拷贝相关软件包到/ISO/Packages目录下在使用Centos系统安装完成后会生成/root/install.log，该文件记录了系统安装时安装的RPM包信息。如果没有该文件，可以手动生成（新安装的干净系统）： 1) 生成install.log1rpm -qa &gt;&gt; /root/install.log 2) 拷贝rpm包的脚本1awk '&#123;print $0&#125;' /root/install.log |xargs -i cp /media/Packages/&#123;&#125;.rpm /ISO/Packages/ 因为需要自定制iso，需要预安装其他的包，将解决好依赖关系的包全部放入/ISO/Packages/中 3) 配置yum下载指定软件包列表（rpms_list.txt）的所有依赖包1234567891011121314151617181920#!/bin/sh#(1) 只下载不安装 for line in `cat rpms_list.txt` do echo $line yum install -y --downloadonly --downloaddir=/root/test/ $line doneecho "安装包下载完毕，下面整理包名"#(2)获取下载的所有包的名字到指定文件cd /root/testfor file in $(ls *) do echo $file &gt;&gt; /root/rpm_names.txt doneecho "包名全称整理完毕，下面替换后缀"#(3)去除 “.rpm”sed -i "s/.rpm//g" /root/rpm_names.txtecho "替换完毕"#拷贝包到指定目录cp /root/test/* /ISO/Packages/ 5 修改isolinux.cfg文件，将“append initrd=initrd.img”后面的当前行内容删除，并加入“ks=cdrom:/isolinux/ks.cfg”。1234label linuxmenu label ^Install CentOS Linux 7kernel vmlinuzappend initrd=initrd.img ks=cdrom:/isolinux/ks.cfg 6 修改自动化安装配置文件1cp /root/anaconda-ks.cfg /ISO/isolinux/ks.cfg 在%packages与%end中间加入需要自定义安装的包全称，带版本号，本例使用如下的一个rpm包，并且要记得将该rpm包放到/ISO/Packages目录下 在指定字符串“kexec-tools”后面添加rpm_names.txt中的所有包名12345#!/bin/shfor line in `cat rpm_names.txt`do sed -i "/kexec-tools/a\\"$line"" ks.cfgdone 7 生成comps.xml文件1）进入/ISO/repodata 目录，将“*-x86_64-comps.xml”文件拷贝到/ISO/repodata路径下，并重命名成comps.xml。1cp /media/repodata/*-x86_64-comps.xml /ISO/repodata/comps.xml 2）切换到ISO/路径下，生成comps.xml文件1createrepo -g repodata/comps.xml ./ 8 进入到ISO目录，生成ISO文件1mkisofs -o CentOS-7.3.iso -input-charset utf-8 -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -R -J -v -T -joliet-long /ISO/ 9 生成ISO文件MD5值1/usr/bin/implantisomd5 /ISO/CentOS-7.3.iso 10 使用生成的ISO镜像去安装系统时就会默认把自定义的rpm装上11 若不自动安装则需配置isolinux.cfg1234label linuxmenu label ^Install CentOS 7kernel vmlinuzappend initrd=initrd.img inst.stage2=hd:LABEL=CentOS7 quiet inst.stage2为安装介质位置，hd:LABEL为介质标签，例如CentOS7。这个和生成ISO镜像文件的命令genisoimage的参数-V有关。 制作命令12# 注意参数中的-V，和上面的isolinux.cfg文件有关genisoimage -joliet-long -V CentOS7 -o CentOS-7-3.iso -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -R -J -v -cache-inodes -T -eltorito-alt-boot -e images/efiboot.img -no-emul-boot /ISO 参考链接：https://blog.csdn.net/u013943420/article/details/71875489http://yangfannie.com/771.htmlhttps://blog.csdn.net/u013870094/article/details/53179531https://www.cnblogs.com/panyouming/p/8401038.html貌似这个是最详细的：https://o-my-chenjian.com/2017/11/20/DIY-A-CentOS7-System/]]></content>
+      <categories>
+        <category>Linux</category>
+      </categories>
+      <tags>
+        <tag>CentOS</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[百度地图API使用-支持https网站]]></title>
+    <url>%2F2018%2F10%2F13%2F%E7%99%BE%E5%BA%A6%E5%9C%B0%E5%9B%BEAPI%E4%BD%BF%E7%94%A8-%E6%94%AF%E6%8C%81https%E7%BD%91%E7%AB%99%2F</url>
+    <content type="text"><![CDATA[一 申请AK百度地图开放平台地址：http://lbsyun.baidu.com/顶部进入控制台，创建“服务端”应用 二 页面使用1 页面引入百度地图api的js1&lt;script type="text/javascript" src="https://api.map.baidu.com/api?v=2.0&amp;ak=&#123;你的秘钥AK&#125;&amp;s=1"&gt;&lt;/script` 2 div标签1&lt;div id="allmap" style="width: 504px;height: 310px"&gt;&lt;/div&gt; 3 js代码12345678910111213&lt;script type="text/javascript"&gt; // 百度地图API功能 var ggPoint = new BMap.Point(&#123;BD09百度坐标系&#125;); //地图初始化 var bm = new BMap.Map("allmap"); bm.centerAndZoom(ggPoint, 18); bm.addControl(new BMap.NavigationControl()); //添加gps marker和label var markergg = new BMap.Marker(ggPoint); bm.addOverlay(markergg); //添加GPS marker var marker = new BMap.Marker(ggPoint); bm.enableScrollWheelZoom(true); //开启鼠标滚轮缩放&lt;/script&gt; 4 修改坐标点12345bm.clearOverlays();var new_point = new BMap.Point(&#123;BD09百度坐标系&#125;);var marker = new BMap.Marker(new_point); // 创建标注bm.addOverlay(marker); // 将标注添加到地图中bm.panTo(new_point); //转到该点位置]]></content>
+      <categories>
+        <category>JavaScript</category>
+      </categories>
+      <tags>
+        <tag>JavaScript</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[Nginx或tomcat8配置https]]></title>
+    <url>%2F2018%2F10%2F10%2FNginx%E6%88%96tomcat8%E9%85%8D%E7%BD%AEhttps%2F</url>
+    <content type="text"><![CDATA[前提申请免费域名https证书一、nginx配置https并转发到tomcat1、Nginx配置文件12345678910111213141516171819202122232425262728293031323334353637 server &#123; listen 80; listen 443 ssl default_server; server_name &#123;域名&#125;; # root /usr/share/nginx/html; # 解释：当此虚拟站点只允许https访问时，当用http访问时nginx会报出497错误码ssl on;error_page 497 https://$host$uri$args;ssl_certificate /etc/nginx/cer/&#123;域名&#125;.crt; #证书路径ssl_certificate_key /etc/nginx/cer/&#123;域名&#125;.key; #私钥路径ssl_session_cache shared:SSL:10m;ssl_session_timeout 10m;ssl_protocols TLSv1 TLSv1.1 TLSv1.2;ssl_ciphers ECDH:AESGCM:HIGH:RSA+3DES:!RC4:!DH:!MD5:!aNULL:!eNULL;ssl_prefer_server_ciphers on; # Load configuration files for the default server block. include /etc/nginx/default.d/*.conf; client_max_body_size 50m; location / &#123; proxy_redirect off; proxy_pass http://127.0.0.1:8080; proxy_set_header Host $host; proxy_set_header X-Real-IP $remote_addr; proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; proxy_redirect default ; &#125; error_page 404 /404.html; location = /40x.html &#123; &#125; error_page 500 502 503 504 /50x.html; location = /50x.html &#123; &#125; &#125; 2、 nginx配置如上之后，tomcat需配置如下1234567891011&lt;!-- 1、connector配置--&gt;&lt;Connector port="8080" protocol="HTTP/1.1" connectionTimeout="20000" redirectPort="443" proxyPort="443"/&gt;&lt;!--2、Engine 中加入该Value--&gt;&lt;Engine name="Catalina" defaultHost="localhost"&gt; &lt;Valve className="org.apache.catalina.valves.RemoteIpValve" remoteIpHeader="X-Forwarded-For" protocolHeader="X-Forwarded-Proto" protocolHeaderHttpsValue="https" httpsServerPort="443"/&gt;&lt;/Engine&gt; 二、tomcat配置https12345678&lt;Connector port="8443" protocol="org.apache.coyote.http11.Http11Protocol" SSLEnabled="true" scheme="https" secure="true" clientAuth="false" sslProtocol="TLS" keystoreFile="&#123;域名&#125;.jks全路径" keystorePass="&#123;私钥，可填可不填&#125;"/`]]></content>
+      <categories>
+        <category>Linux</category>
+      </categories>
+      <tags>
+        <tag>Server</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[Jenkins自动部署脚本]]></title>
+    <url>%2F2018%2F09%2F25%2FJenkins%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2%E8%84%9A%E6%9C%AC%2F</url>
+    <content type="text"><![CDATA[Jenkins自动部署脚本 #!/bin/bash tomcat_home=/usr/local/src/ShareZone new_war=/usr/local/src/ShareZone/ShareZone.war SHUTDOWN=$tomcat_home/bin/shutdown.sh STARTTOMCAT=$tomcat_home/bin/startup.sh case $1 in -start) echo &quot;启动$ ShareZone Tocmat ing&quot; $STARTTOMCAT ;; -stop) echo &quot;关闭$ ShareZone Tocmat ing&quot; $SHUTDOWN ps -ef |grep tomcat |grep $tomcat_home |grep -v &apos;grep&apos;|awk &apos;{print $2}&apos; | xargs kill -9 #删除日志文件 rm $tomcat_home/logs/* -rf #删除tomcat的临时目录 rm $tomcat_home/work/* -rf ;; -restart) echo &quot;重启服务$ ShareZone Tocmat&quot; echo &quot;关闭 $ ShareZone Tocmat ing&quot; $SHUTDOWN ps -ef |grep tomcat |grep $tomcat_home |grep -v &apos;grep&apos;|awk &apos;{print $2}&apos; | xargs kill -9 #删除日志文件 rm $tomcat_home/logs/* -rf #删除tomcat的临时目录 rm $tomcat_home/work/* -rf sleep 5 echo &quot;启动$ ShareZone Tomcat ing&quot; $STARTTOMCAT #看启动日志 ;; -log) ##cd $tomcat_home/log tail -f $tomcat_home/logs/catalina.out ;; -d) echo &quot;开始部署新环境&quot; echo &quot;关闭$tomcat_home&quot; $SHUTDOWN ps -ef |grep tomcat |grep $tomcat_home |grep -v &apos;grep&apos;|awk &apos;{print $2}&apos; | xargs kill -9 # 删除原 war 包 rm $tomcat_home/webapps/ShareZone.war -rf rm $tomcat_home/webapps/ShareZone -rf sleep 5 # 拷贝新 war 包 cp $new_war $tomcat_home/webapps/ sleep 5 # 启动 echo &quot;启动$tomcat_home&quot; $STARTTOMCAT echo &quot;完成部署新环境&quot; ;; -h) echo &quot;-start 启动tomcat&quot; echo &quot;-stop 停止tomcat&quot; echo &quot;-restat 重启tomcat&quot; echo &quot;-d jenkins部署&quot; echo &quot;-log 查看log&quot; echo &quot;-h 帮助&quot; ;; esac]]></content>
+      <categories>
+        <category>Linux</category>
+      </categories>
+      <tags>
+        <tag>Jenkins</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[CentOS在线安装MySql5.7，并配置远程访问]]></title>
+    <url>%2F2018%2F09%2F25%2FCentOS%E5%9C%A8%E7%BA%BF%E5%AE%89%E8%A3%85MySql5-7%EF%BC%8C%E5%B9%B6%E9%85%8D%E7%BD%AE%E8%BF%9C%E7%A8%8B%E8%AE%BF%E9%97%AE%2F</url>
+    <content type="text"><![CDATA[一 在线安装1 安装命令1234567wget http://dev.mysql.com/get/mysql57-community-release-el7-8.noarch.rpmyum localinstall mysql57-community-release-el7-8.noarch.rpmyum repolist enabled | grep "mysql.*-community.*"yum install mysql-community-serversystemctl start mysqldsystemctl enable mysqldsystemctl daemon-reloa` 2 修改root密码12cat /var/log/mysqld.logcat /var/log/mysqld.log | grep temporar` 1234567891011mysql -u root –p#输入 找到的 初始密码#修改初始密码set password for 'root'@'localhost'=password('pass1234');#如果提示不让修改密码, 是因为密码强度不符合默认的密码策略#首先，修改validate_password_policy参数的值set global validate_password_policy=0;#再修改密码的长度set global validate_password_length=1;#再次执行修改密码就可以了set password for 'root'@'localhost'=password('pass1234')` 3 允许其他主机远程登录12345#授权其他机器登陆GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'pass1234' WITH GRANT OPTION;FLUSH PRIVILEGES;#允许指定主机远程访问set global validate_password_policy=0;GRANT ALL PRIVILEGES ON aossdb.* TO 'root'@'192.168.0.1' IDENTIFIED BY 'pass1234' WITH GRANT OPTION; 4 mysql控制台远程登录1mysql -h &#123;IP&#125; &#123;端口&#125; -u &#123;用户名&#125; -p&#123;密码&#125;]]></content>
+      <categories>
+        <category>Linux</category>
+      </categories>
+      <tags>
+        <tag>Mysql</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[CentOS7下安装nginx并配置代理到tomcat端口]]></title>
+    <url>%2F2018%2F09%2F20%2FCentOS7%E4%B8%8B%E5%AE%89%E8%A3%85nginx%E5%B9%B6%E9%85%8D%E7%BD%AE%E4%BB%A3%E7%90%86%E5%88%B0tomcat%E7%AB%AF%E5%8F%A3%2F</url>
+    <content type="text"><![CDATA[原文：如何在CentOS 7上安装Nginx 第一步 - 添加Nginx存储库要添加CentOS 7 EPEL仓库，请打开终端并使用以下命令：1sudo yum install epel-release 第二步 - 安装Nginx现在Nginx存储库已经安装在您的服务器上，使用以下yum命令安装Nginx ：1sudo yum install nginx 在对提示回答yes后，Nginx将在服务器上完成安装。 第三步 - 启动NginxNginx不会自行启动。要运行Nginx，请输入：1sudo systemctl start nginx 如果您正在运行防火墙，请运行以下命令以允许HTTP和HTTPS通信：123sudo firewall-cmd --permanent --zone=public --add-service=httpsudo firewall-cmd --permanent --zone=public --add-service=httpssudo firewall-cmd --reload 您将会看到默认的CentOS 7 Nginx网页，这是为了提供信息和测试目的。它应该看起来像这样： 如果看到这个页面，那么你的Web服务器现在已经正确安装了。如果想在系统启动时启用Nginx。请输入以下命令：1sudo systemctl enable nginx 恭喜！Nginx现在已经安装并运行了！ 第四步 - 配置Nginx反向代理tomcat找到nginx的配置把location改为如下即可代理到指定ip的tomcat服务端口： 1234567location / &#123; proxy_pass http://127.0.0.1:8080; proxy_set_header Host $host; proxy_set_header X-Real-IP $remote_addr; proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; proxy_redirect default ; &#125;]]></content>
+      <categories>
+        <category>Linux</category>
+      </categories>
+      <tags>
+        <tag>CentOS</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[Linux上的redis安装，包括后台启动redis]]></title>
+    <url>%2F2018%2F08%2F30%2FLinux%E4%B8%8A%E7%9A%84redis%E5%AE%89%E8%A3%85%EF%BC%8C%E5%8C%85%E6%8B%AC%E5%90%8E%E5%8F%B0%E5%90%AF%E5%8A%A8redis%2F</url>
+    <content type="text"><![CDATA[一 下载并安装 $ wget http://download.redis.io/releases/redis-2.8.17.tar.gz $ tar -zxvf redis-2.8.17.tar.gz $ cd redis-2.8.17 $ make 二 make命令执行时出现gcc未找到错误执行如下命令： $ yum -y install gcc automake autoconf libtool make 三 再次执行make命令最好还是把解压过后的删除重新解压tar.gz包重新make $ make 四 启动redis服务make完后 redis-2.8.17目录下会出现编译后的redis服务程序redis-server,还有用于测试的客户端程序redis-cli,两个程序位于安装目录 src 目录下： $ cd src $ ./redis-server 五上面的启动方式是使用的默认配置，接下来配置后台启动（1）在redis根目录找到一个叫redis.conf的文件，这个文件是redis的配置文件（2）使用vi或者vim命令编辑该文件（3）找到如下位置（4）将daemonize的值设置为yes，然后保存并退出（5）执行如下命令即可后台启动redis $ ./src/redis-server ./redis.conf （6）执行如下命令查看redis是否后台启动成功 $ ps -ef|grep redis 六 Redis daemonize说明（1）daemonize介绍 redis.conf配置文件中daemonize守护线程，默认是NO daemonize是用来指定redis是否要用守护线程的方式启动 （2）daemonize 设置yes或者no区别 daemonize yes : redis采用的是单进程多线程的模式。当redis.conf中选项daemonize设置成yes时，代表开启守护进程模式。在该模式下，redis会在后台运行，并将进程pid号写入至redis.conf选项pidfile设置的文件中，此时redis将一直运行，除非手动kill该进程。2.daemonize no :当daemonize选项设置成no时，当前界面将进入redis的命令行界面，exit强制退出或者关闭连接工具(putty,xshell等)都会导致redis进程退出。]]></content>
+      <categories>
+        <category>Linux</category>
+      </categories>
+      <tags>
+        <tag>Redis</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[Finder显示隐藏文件及文件夹]]></title>
+    <url>%2F2018%2F08%2F12%2FFinder%E6%98%BE%E7%A4%BA%E9%9A%90%E8%97%8F%E6%96%87%E4%BB%B6%E5%8F%8A%E6%96%87%E4%BB%B6%E5%A4%B9%2F</url>
+    <content type="text"><![CDATA[显示隐藏文件及文件夹：1defaults write com.apple.finder AppleShowAllFiles -boolean true ; killall Finder 不显示隐藏文件及文件夹：1defaults write com.apple.finder AppleShowAllFiles -boolean false ; killall Finder]]></content>
+      <categories>
+        <category>Mac OS</category>
+      </categories>
+      <tags>
+        <tag>Mac OS</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[Linux相关命令]]></title>
+    <url>%2F2017%2F12%2F20%2FLinux%E7%9B%B8%E5%85%B3%E5%91%BD%E4%BB%A4%2F</url>
+    <content type="text"><![CDATA[一、Openjdk1 安装命令：yum search java | grep -i --color JDK yum install -y java-1.8.0-openjdk-devel.x86_64 2 切换jdk版本：sudo update-alternatives --config java sudo update-alternatives --config javac 3 查看jdk安装路径：java -verbose 二、Linux防火墙相关1 redhat关闭防火墙：1）立即关闭，并非永久关闭 service iptables stop 2）永久关闭 iptables -F 关闭防火墙功能 chkconfig iptables off 禁止防火墙启动 2 centos7防火墙:启动一个服务：systemctl start firewalld.service 关闭一个服务：systemctl stop firewalld.service 重启一个服务：systemctl restart firewalld.service 显示一个服务的状态：systemctl status firewalld.service 在开机时启用一个服务：systemctl enable firewalld.service 在开机时禁用一个服务：systemctl disable firewalld.service 查看服务是否开机启动：systemctl is-enabled firewalld.service;echo $? 查看已启动的服务列表：systemctl list-unit-files|grep enabled 三、Linux查看进程ps -ef|grep {程序名称} 查询出进程编号 ps -aux|grep {程序名称} 查询出进程编号 kill -9 {进程编号} 杀死进程 四、给vim编辑的文件添加行号:set nu 五、编辑如下文件允许root用户远程登录vim /etc/ssh/sshd_config 更改 PasswordAuthentication 后的 no 为 yes 再执行 service sshd restart 重启ssh服务 六、查找某个文件find {全路径} -name *{需模糊查询的文件名}* 七、管理磁盘通过此命令定位文件在哪个目录 du -shx *]]></content>
+      <categories>
+        <category>Linux</category>
+      </categories>
+      <tags>
+        <tag>Linux</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[第一篇文章]]></title>
+    <url>%2F2017%2F12%2F20%2F%E7%AC%AC%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0%2F</url>
+    <content type="text"><![CDATA[《Hexo+github搭建个人博客》: 点此链接查看详细部署步骤 搭建这个博客所需要的东西Hexo:Hexo 是一款基于Node.js、快速、简洁且高效的博客框架。Hexo 使用 Markdown（或其他渲染引擎）解析文章，在几秒内，即可利用靓丽的主题生成静态网页。 NodeJsNodejs框架是基于V8的引擎，是目前速度最快的Javascript引擎。chrome浏览器就基于V8，同时打开20-30个网页都很流畅。Nodejs标准的web开发框架Express，可以帮助我们迅速建立web站点，比起PHP的开发效率更高，而且学习曲线更低。非常适合小型网站，个性化网站，我们自己的Geek网站！！ JS是脚本语言，脚本语言需要一个解析器才能运行。对于写在HTML页面里面的JS，浏览器充当了解析器的角色。而对于需要独立运行的JS，NodeJS就是一个解析器。 每种解析器就是一个运行环境，不但允许JS定义各种数据结构，进行各种计算，还允许JS使用运行环境提供的内置对象和方法做一些事情。例如运行在浏览器中的JS的用途是操作DOM，浏览器就提供了document之类的内置对象。而运行在NodeJS中的JS的用途是操作磁盘文件或者搭建HTTP服务器，NodeJS就相应提供了fs、http等内置对象。 GithubGitHub is the single largest host for Git repositories, and is the central point of collaboration for millions of developers and projects. A large percentage of all Git repositories are hosted on GitHub, and many open-source projects use it for Git hosting, issue tracking, code review, and other things. So while it’s not a direct part of the Git open source project, there’s a good chance that you’ll want or need to interact with GitHub at some point while using Git professionally.Github是Git仓库唯一且最大的主机，它是数以万计的开发者和项目协作的中心点。绝大部分Git仓库托管在GitHub上，许多的开源项目使用Github的Git仓库托管服务，问题跟踪，代码复查和其他的东西。因此，虽然它不是直接参与Git的开源项目，但这是一个你会想要或者需要在某些时候专业地使用Git与github互动的好机会。 Git是一个开源的分布式版本控制系统，用以有效、高速的处理从很小到非常大的项目版本管理。 Github pageGitHub Pages本用于介绍托管在GitHub的项目， 不过，由于他的空间免费稳定，用来做搭建一个博客再好不过了。 MarkdownMarkdown 是一种轻量级标记语言，创始人为约翰·格鲁伯（John Gruber）。它允许人们“使用易读易写的纯文本格式编写文档，然后转换成有效的XHTML(或者HTML)文档”。这种语言吸收了很多在电子邮件中已有的纯文本标记的特性。 优点： 1、简单，容易上手 2、纯文本实现，程序员最爱，容易扩展，方便和其他工具联动 3、平台支持广：以Github为首的各种平台、各种博客都支持，基本上现在面向程序员的输入框都可以用Markdown来写了 4、丰富的工具链 5、编辑器：各种支持所见即所得的编辑器 6、和各种其他格式互相转化的工具。PDF、Mobi、Epub、HTML等等，几乎你能想到的所有格式它都能转换。]]></content>
+      <categories>
+        <category>总结</category>
+      </categories>
+      <tags>
+        <tag>hexo+github</tag>
+      </tags>
+  </entry>
+</search>
